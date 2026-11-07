@@ -1,0 +1,910 @@
+{
+  "id": 3,
+  "title": "Design under pressure",
+  "lectures": "06–07",
+  "questions": [
+    {
+      "id": "p3q1",
+      "type": "multi",
+      "topic": "Anomalies",
+      "scenario": "A consultancy stores Staff(staffID, staffName, deptID, deptName, office). staffID is the primary key. Every department has one name and office, and each staff member belongs to one department. Departments may exist before hiring anyone.",
+      "prompt": "Which problems or design conclusions are justified?",
+      "options": [
+        {
+          "text": "Making staffName UNIQUE removes the dependency deptID → office.",
+          "correct": false,
+          "why": "Uniqueness of names does not change the department rule."
+        },
+        {
+          "text": "Deleting the last staff row of a department can remove the only stored record of its office.",
+          "correct": true,
+          "why": "The office fact is stored only in staff rows."
+        },
+        {
+          "text": "Separating Department(deptID, deptName, office) allows departments to be stored independently.",
+          "correct": true,
+          "why": "The department now has its own row and key."
+        },
+        {
+          "text": "Changing a department office may require updating several rows.",
+          "correct": true,
+          "why": "Each staff row repeats that department fact."
+        },
+        {
+          "text": "A new department with no staff can always be represented by a row whose staffID is NULL.",
+          "correct": false,
+          "why": "The primary key cannot be NULL."
+        }
+      ],
+      "explanation": "Identify which real-world fact is repeated and whether that fact can exist without a staff member.",
+      "source": "Lecture 06, slides 4–10"
+    },
+    {
+      "id": "p3q2",
+      "type": "multi",
+      "topic": "Closure and minimal keys",
+      "scenario": "A booking system has R(A,B,C,D,E). A is a booking code, B a customer code, C a route code, D a zone, and E a confirmation code. Its complete FD basis is A→BC, B→D, CD→E, E→A. No additional independent dependencies are assumed.",
+      "prompt": "Which sets are candidate keys?",
+      "options": [
+        {
+          "text": "ABC",
+          "correct": false,
+          "why": "It is a superkey but contains the smaller key A."
+        },
+        {
+          "text": "B",
+          "correct": false,
+          "why": "B gives D only; C and the remaining attributes are missing."
+        },
+        {
+          "text": "E",
+          "correct": true,
+          "why": "E gives A, which gives every attribute."
+        },
+        {
+          "text": "CD",
+          "correct": true,
+          "why": "CD gives E, then A and B; neither C nor D alone suffices."
+        },
+        {
+          "text": "A",
+          "correct": true,
+          "why": "A gives B,C, then D, then E; a singleton is minimal."
+        }
+      ],
+      "explanation": "Closure establishes a superkey; removal of each attribute tests minimality. BC is another candidate key, although it is not listed.",
+      "source": "Lecture 06, slides 14–18"
+    },
+    {
+      "id": "p3q3",
+      "type": "multi",
+      "topic": "Superkeys versus keys",
+      "scenario": "For Parcel(P,Q,R,S), the complete FD basis is P→Q and Q→RS. A student computes (PQ)+={P,Q,R,S} and declares PQ to be a candidate key.",
+      "prompt": "Which parts of the review are valid?",
+      "options": [
+        {
+          "text": "P is a candidate key.",
+          "correct": true,
+          "why": "P determines all attributes and has no proper nonempty subset."
+        },
+        {
+          "text": "Removing Q still leaves a superkey.",
+          "correct": true,
+          "why": "P determines Q, then R and S."
+        },
+        {
+          "text": "PQ is a superkey.",
+          "correct": true,
+          "why": "Its closure contains all four attributes."
+        },
+        {
+          "text": "PQ is minimal because its closure contains every attribute.",
+          "correct": false,
+          "why": "Closure alone does not prove minimality."
+        },
+        {
+          "text": "Q is not a superkey under the stated dependencies.",
+          "correct": true,
+          "why": "Q gives R and S but cannot determine P."
+        }
+      ],
+      "explanation": "Do not equate “determines all attributes” with “minimal determinant”.",
+      "source": "Lecture 06, slides 14–18"
+    },
+    {
+      "id": "p3q4",
+      "type": "multi",
+      "topic": "Inference from sample rows",
+      "scenario": "A supplier register currently contains (city,postcode): (Kandy,20000), (Galle,80000), (Matara,81000). The analyst proposes city→postcode. The business has not stated such a rule.",
+      "prompt": "Which conclusions are justified?",
+      "options": [
+        {
+          "text": "Adding (Kandy,20001) would violate the proposed dependency.",
+          "correct": true,
+          "why": "It creates equal city values with different postcodes."
+        },
+        {
+          "text": "The proposed dependency automatically implies postcode→city.",
+          "correct": false,
+          "why": "An FD does not automatically work in reverse."
+        },
+        {
+          "text": "These three rows satisfy city→postcode.",
+          "correct": true,
+          "why": "There is no pair with equal city and different postcode."
+        },
+        {
+          "text": "The present sample is enough to choose city as a guaranteed key for all future data.",
+          "correct": false,
+          "why": "The required uniqueness rule has not been established."
+        },
+        {
+          "text": "These rows prove that city→postcode must hold in every future legal instance.",
+          "correct": false,
+          "why": "A finite sample cannot establish an unstated business dependency."
+        }
+      ],
+      "explanation": "Distinguish an FD holding in one instance from an FD that constrains all legal instances.",
+      "source": "Lecture 06, slides 11–14"
+    },
+    {
+      "id": "p3q5",
+      "type": "multi",
+      "topic": "Armstrong reasoning",
+      "scenario": "A shipment relation Shipment(OrderID,CustomerID,Region,ShipDate,PackageNo) uses the complete dependency basis OrderID→CustomerID, CustomerID→Region, and OrderID→ShipDate. A developer wants to derive constraints without inspecting sample values.",
+      "prompt": "Which dependency claims are justified?",
+      "options": [
+        {
+          "text": "CustomerID→OrderID",
+          "correct": false,
+          "why": "Nothing determines OrderID from CustomerID."
+        },
+        {
+          "text": "OrderID,PackageNo→Region,PackageNo",
+          "correct": true,
+          "why": "Augment OrderID→Region with PackageNo."
+        },
+        {
+          "text": "Region→CustomerID cannot be derived from this dependency basis.",
+          "correct": true,
+          "why": "No dependency permits reconstructing CustomerID from Region."
+        },
+        {
+          "text": "OrderID→CustomerID,Region,ShipDate",
+          "correct": true,
+          "why": "Combine the given and derived dependencies by union."
+        },
+        {
+          "text": "OrderID→Region",
+          "correct": true,
+          "why": "Apply transitivity through CustomerID."
+        }
+      ],
+      "explanation": "Use transitivity, union and augmentation; never reverse a dependency merely because it looks useful.",
+      "source": "Lecture 06, slides 15–17"
+    },
+    {
+      "id": "p3q6",
+      "type": "multi",
+      "topic": "Partial dependencies",
+      "scenario": "An equipment hire relation Hire(memberID, itemID, memberName, itemName, hours) has key (memberID,itemID). Its complete FD basis is memberID→memberName, itemID→itemName, and (memberID,itemID)→hours. All values are atomic.",
+      "prompt": "Which judgments are correct?",
+      "options": [
+        {
+          "text": "The relation violates 2NF.",
+          "correct": true,
+          "why": "Two non-prime attributes depend on proper parts of its key."
+        },
+        {
+          "text": "Choosing memberID as the primary key would be a valid repair without changing the business rules.",
+          "correct": false,
+          "why": "A member can have multiple items; memberID does not determine all attributes."
+        },
+        {
+          "text": "hours is necessarily partially dependent on the key.",
+          "correct": false,
+          "why": "No proper subset of the key determines hours under the stated basis."
+        },
+        {
+          "text": "hours is prime because the whole candidate key determines it.",
+          "correct": false,
+          "why": "Being determined by a key does not make an attribute prime; it must occur in a candidate key."
+        },
+        {
+          "text": "Member(memberID,memberName), Item(itemID,itemName), Hire(memberID,itemID,hours) removes the stated partial dependencies.",
+          "correct": true,
+          "why": "Each descriptive fact moves to the relation identified by its determinant."
+        }
+      ],
+      "explanation": "Separate facts about a member, an item, and the pairing of the two.",
+      "source": "Lecture 06, slides 20–22"
+    },
+    {
+      "id": "p3q7",
+      "type": "multi",
+      "topic": "Alternate candidate keys",
+      "scenario": "A 1NF relation R(A,B,C,D) has complete FD basis A→BCD, BC→A, B→D. The designer chooses A as its primary key and argues that a single-column primary key guarantees 2NF.",
+      "prompt": "Which statements are correct?",
+      "options": [
+        {
+          "text": "D is non-prime.",
+          "correct": true,
+          "why": "The candidate keys are A and BC, neither containing D."
+        },
+        {
+          "text": "B→D is a partial dependency on candidate key BC.",
+          "correct": true,
+          "why": "B is a proper subset of BC and D is non-prime."
+        },
+        {
+          "text": "BC is an alternate candidate key.",
+          "correct": true,
+          "why": "BC gives A and hence all attributes; neither B nor C alone does."
+        },
+        {
+          "text": "The relation is in 2NF because the chosen primary key has one column.",
+          "correct": false,
+          "why": "2NF must consider every candidate key, not just the chosen primary key."
+        },
+        {
+          "text": "The 2NF violation persists if BC is chosen as primary key instead.",
+          "correct": true,
+          "why": "The dependencies and all candidate keys stay the same when a different key is designated primary."
+        }
+      ],
+      "explanation": "A hidden composite alternate key can expose a partial dependency even when the primary key is simple.",
+      "source": "Lecture 06, slides 18–23"
+    },
+    {
+      "id": "p3q8",
+      "type": "multi",
+      "topic": "Highest normal form",
+      "scenario": "An appointment relation R(appointmentID, doctorID, specialty) has complete FD basis appointmentID→doctorID and doctorID→specialty. Values are atomic and no other independent FDs hold.",
+      "prompt": "Which conclusions about this schema are correct?",
+      "options": [
+        {
+          "text": "3NF but not BCNF",
+          "correct": false,
+          "why": "The non-prime dependency doctorID→specialty violates 3NF as well."
+        },
+        {
+          "text": "BCNF",
+          "correct": false,
+          "why": "doctorID does not determine appointmentID."
+        },
+        {
+          "text": "doctorID determines appointmentID under the stated dependencies.",
+          "correct": false,
+          "why": "The dependency basis gives no route from doctorID back to appointmentID."
+        },
+        {
+          "text": "2NF but not 3NF",
+          "correct": true,
+          "why": "doctorID is a non-superkey determinant of non-prime specialty."
+        },
+        {
+          "text": "appointmentID is a candidate key.",
+          "correct": true,
+          "why": "It determines doctorID and then specialty; no smaller nonempty determinant exists."
+        }
+      ],
+      "explanation": "Follow appointmentID→doctorID→specialty. The transitive non-key fact causes the 3NF failure.",
+      "source": "Lecture 06, slides 21–25"
+    },
+    {
+      "id": "p3q9",
+      "type": "multi",
+      "topic": "Lossless decomposition",
+      "scenario": "A project assignment relation R(staffID, projectID, desk) has complete FD basis staffID→projectID,desk. A proposed split stores S(staffID,projectID) and T(projectID,desk). Projects may have multiple staff using different desks.",
+      "prompt": "Which conclusions are valid?",
+      "options": [
+        {
+          "text": "Retaining every original attribute is sufficient to guarantee losslessness.",
+          "correct": false,
+          "why": "The projections can preserve every attribute while losing the association between staffID and desk."
+        },
+        {
+          "text": "Splitting into S(staffID,projectID) and U(staffID,desk) is lossless under the stated FD.",
+          "correct": true,
+          "why": "The shared staffID determines both components."
+        },
+        {
+          "text": "The shared projectID alone proves the split is lossless.",
+          "correct": false,
+          "why": "The intersection must determine at least one complete component, not merely exist."
+        },
+        {
+          "text": "The original FD staffID→desk is directly enforceable using only S and T separately under their projected FDs.",
+          "correct": false,
+          "why": "Neither component includes both staffID and desk, and the projected dependencies cannot recover it."
+        },
+        {
+          "text": "Joining the projections can associate a staff member with another staff member’s desk.",
+          "correct": true,
+          "why": "Two desks for the same project match each staff row for that project."
+        }
+      ],
+      "explanation": "For example, (s1,p1,d1) and (s2,p1,d2) generate two extra combinations under the proposed split.",
+      "source": "Lecture 06, slides 8–10, 14–18"
+    },
+    {
+      "id": "p3q10",
+      "type": "multi",
+      "topic": "BCNF versus dependency preservation",
+      "scenario": "A course allocation relation R(student,course,tutor) has complete FD basis (student,course)→tutor and tutor→course. Tutors may teach many students but exactly one course. All values are atomic.",
+      "prompt": "Which statements are correct?",
+      "options": [
+        {
+          "text": "The split TutorCourse(tutor,course), StudentTutor(student,tutor) is lossless.",
+          "correct": true,
+          "why": "The intersection tutor determines TutorCourse."
+        },
+        {
+          "text": "That split preserves (student,course)→tutor using component constraints alone.",
+          "correct": false,
+          "why": "Two tutors for one student may map to the same course without violating either component FD."
+        },
+        {
+          "text": "tutor→course violates BCNF.",
+          "correct": true,
+          "why": "A tutor does not determine student and therefore is not a superkey."
+        },
+        {
+          "text": "The original relation is in 3NF under these dependencies.",
+          "correct": true,
+          "why": "All three attributes are prime; the non-superkey determinant tutor has prime course on the right-hand side."
+        },
+        {
+          "text": "The candidate keys are (student,course) and (student,tutor).",
+          "correct": true,
+          "why": "Each pair determines the third attribute, and each is minimal."
+        }
+      ],
+      "explanation": "Lossless BCNF decomposition can sacrifice dependency preservation. This relation is a classic 3NF-but-not-BCNF case.",
+      "source": "Lecture 06, slides 18–25"
+    },
+    {
+      "id": "p3q11",
+      "type": "multi",
+      "topic": "Choosing a decomposition",
+      "scenario": "Warehouse R(binID, zoneID, zoneName, supervisor) has complete FD basis binID→zoneID and zoneID→zoneName,supervisor. A team replaces it with Bin(binID,zoneID) and Zone(zoneID,zoneName,supervisor).",
+      "prompt": "Which claims hold under these dependencies?",
+      "options": [
+        {
+          "text": "A zone without any bin still cannot be represented after the split.",
+          "correct": false,
+          "why": "The separate Zone table allows an independent zone row, regardless of Bin rows."
+        },
+        {
+          "text": "Zone remains outside BCNF solely because it contains three attributes.",
+          "correct": false,
+          "why": "Attribute count does not determine a normal form; zoneID is its key."
+        },
+        {
+          "text": "The split is lossless.",
+          "correct": true,
+          "why": "Shared zoneID determines the Zone relation."
+        },
+        {
+          "text": "The original dependencies can be enforced within the two component relations.",
+          "correct": true,
+          "why": "binID→zoneID is local to Bin; the other dependencies are local to Zone."
+        },
+        {
+          "text": "The split requires duplicating zoneName once for every bin.",
+          "correct": false,
+          "why": "zoneName is stored once per zone rather than repeated in Bin."
+        }
+      ],
+      "explanation": "A useful decomposition separates the zone fact, preserves the dependencies and reconstructs the original bin facts.",
+      "source": "Lecture 06, slides 7–10, 23–25"
+    },
+    {
+      "id": "p3q12",
+      "type": "multi",
+      "topic": "Data-dependent evidence",
+      "scenario": "A migration team tests a decomposition R(A,B,C)→R1(A,B), R2(B,C). Its complete FD basis is {A→B}. Their current one-row dataset rejoins perfectly.",
+      "prompt": "Which assessments are sound?",
+      "options": [
+        {
+          "text": "The shared attribute B determines neither complete component under the declared FD.",
+          "correct": true,
+          "why": "B does not determine A or C, so the binary lossless criterion fails."
+        },
+        {
+          "text": "B is known to determine R1.",
+          "correct": false,
+          "why": "B→A is not implied by A→B."
+        },
+        {
+          "text": "The decomposition is guaranteed lossless because A is in one component.",
+          "correct": false,
+          "why": "Merely keeping the determinant somewhere is not the binary lossless criterion."
+        },
+        {
+          "text": "Two legal rows (a1,b1,c1) and (a2,b1,c2) provide a counterexample.",
+          "correct": true,
+          "why": "Their projections rejoin into four tuples, adding cross-pairings."
+        },
+        {
+          "text": "The successful one-row test proves losslessness for all legal data.",
+          "correct": false,
+          "why": "A small instance can hide spurious-tuple behaviour."
+        }
+      ],
+      "explanation": "The lossless property must hold for every legal instance, not just the test data.",
+      "source": "Lecture 06, slides 8–10, 15–18"
+    },
+    {
+      "id": "p3q13",
+      "type": "multi",
+      "topic": "Views and current data",
+      "scenario": "A payroll team defines ordinary view PublicStaff as SELECT eid,ename FROM Employee. Users are granted SELECT on the view but not on Employee. Assume permissions are configured so access through the view works.",
+      "prompt": "Which conclusions are correct?",
+      "options": [
+        {
+          "text": "A query against PublicStaff can add its own WHERE condition.",
+          "correct": true,
+          "why": "A view can be queried similarly to a table."
+        },
+        {
+          "text": "The view can hide the salary column from these users.",
+          "correct": true,
+          "why": "salary is not exposed and direct base-table access was denied by assumption."
+        },
+        {
+          "text": "The view necessarily stores a separate copy of every selected row.",
+          "correct": false,
+          "why": "This is an ordinary, non-materialized view."
+        },
+        {
+          "text": "Dropping PublicStaff also deletes Employee rows.",
+          "correct": false,
+          "why": "Dropping the view removes the view definition, not base data."
+        },
+        {
+          "text": "Adding a committed Employee row can make that row appear in the view without recreating it.",
+          "correct": true,
+          "why": "An ordinary view represents its defining query, not a frozen copy."
+        }
+      ],
+      "explanation": "Distinguish a stored query definition from stored copies of query results.",
+      "source": "Lecture 07, slides 4–10"
+    },
+    {
+      "id": "p3q14",
+      "type": "multi",
+      "topic": "Aggregate view edits",
+      "scenario": "A team creates WorkSummary(eid,totalPct) by grouping Works(eid,did,pct) and calculating SUM(pct). An employee currently has assignments of 40 and 30. The interface tries UPDATE WorkSummary SET totalPct=90 WHERE eid=7. No INSTEAD OF trigger is defined.",
+      "prompt": "Which reviews are justified?",
+      "options": [
+        {
+          "text": "SUM(pct) is directly updatable as if it were an ordinary base column.",
+          "correct": false,
+          "why": "The aggregate expression is not a directly updatable column."
+        },
+        {
+          "text": "SQL Server will automatically add 20 to the largest assignment.",
+          "correct": false,
+          "why": "No such allocation rule is defined by an aggregate view."
+        },
+        {
+          "text": "A procedure can explicitly implement a chosen allocation rule on Works.",
+          "correct": true,
+          "why": "The business decision can be programmed rather than inferred from SUM."
+        },
+        {
+          "text": "The view remains useful for reading totals even if that UPDATE is rejected.",
+          "correct": true,
+          "why": "Read usefulness and updateability are different properties."
+        },
+        {
+          "text": "The requested total does not uniquely specify which underlying assignment should change.",
+          "correct": true,
+          "why": "Possible allocations include 60+30, 40+50 and many others."
+        }
+      ],
+      "explanation": "An aggregate value is a result of many rows; changing it requires a defined rule for changing those rows.",
+      "source": "Lecture 07, slides 6–10, 24–28"
+    },
+    {
+      "id": "p3q15",
+      "type": "multi",
+      "topic": "IF boundary and NULL",
+      "scenario": "A service prints a staffing message using the following code. Run A assigns @n=1000; run B leaves @n unassigned. No other statements alter @n.",
+      "prompt": "Which statements describe the executions?",
+      "options": [
+        {
+          "text": "The unassigned variable in run B holds NULL.",
+          "correct": true,
+          "why": "A local variable declared without an initializer starts as NULL."
+        },
+        {
+          "text": "The ELSE message is logically accurate for run A.",
+          "correct": false,
+          "why": "Exactly 1000 is not fewer than 1000."
+        },
+        {
+          "text": "Changing the ELSE message to “Not known to be above 1000” fits both runs.",
+          "correct": true,
+          "why": "It covers both false and unknown conditions."
+        },
+        {
+          "text": "Run B prints the ELSE message.",
+          "correct": true,
+          "why": "NULL>1000 is unknown; IF does not treat it as true."
+        },
+        {
+          "text": "Run A prints the ELSE message.",
+          "correct": true,
+          "why": "1000>1000 is false."
+        }
+      ],
+      "explanation": "ELSE is reached when the condition is not true; that includes equality and unknown values.",
+      "source": "Lecture 07, slides 12–15",
+      "code": "DECLARE @n int;\n-- Run A only: SET @n=1000;\nIF @n>1000 PRINT 'Above 1000';\nELSE PRINT 'Fewer than 1000';"
+    },
+    {
+      "id": "p3q16",
+      "type": "multi",
+      "topic": "Loop trace",
+      "scenario": "A report routine uses a counter to skip one record and stop before processing a later record. No statements outside this code execute.",
+      "prompt": "Which statements are correct?",
+      "options": [
+        {
+          "text": "BREAK prevents every later statement in the entire SQL batch from running.",
+          "correct": false,
+          "why": "BREAK exits the innermost loop, not the entire batch."
+        },
+        {
+          "text": "The printed sequence is 1, 3, 4.",
+          "correct": true,
+          "why": "2 reaches CONTINUE; 5 reaches BREAK before PRINT."
+        },
+        {
+          "text": "Moving the increment after CONTINUE can cause the loop to become stuck at 2.",
+          "correct": true,
+          "why": "Once @i becomes 2, the skip would prevent future increments."
+        },
+        {
+          "text": "CONTINUE exits the WHILE permanently.",
+          "correct": false,
+          "why": "CONTINUE starts the next iteration; BREAK exits."
+        },
+        {
+          "text": "The final value of @i is 5.",
+          "correct": true,
+          "why": "The increment to 5 occurs before the BREAK test."
+        }
+      ],
+      "explanation": "Trace the increment, skip condition and stop condition in their actual order.",
+      "source": "Lecture 07, slides 16–18",
+      "code": "DECLARE @i int=0;\nWHILE @i<6\nBEGIN\n SET @i=@i+1;\n IF @i=2 CONTINUE;\n IF @i=5 BREAK;\n PRINT @i;\nEND;"
+    },
+    {
+      "id": "p3q17",
+      "type": "multi",
+      "topic": "Scalar functions and empty input",
+      "scenario": "A scalar function for a member’s unpaid total assigns @v=SUM(amount) from Fine WHERE mid=@mid AND status='Due', then returns @v. amount is NOT NULL. Member 8 has no qualifying rows. The required result is zero.",
+      "prompt": "Which changes or observations are correct?",
+      "options": [
+        {
+          "text": "Replacing SUM(amount) with COUNT(*) implements the same total for all members.",
+          "correct": false,
+          "why": "COUNT measures rows, not money."
+        },
+        {
+          "text": "The current SUM result for member 8 is NULL.",
+          "correct": true,
+          "why": "SUM over an empty input yields NULL."
+        },
+        {
+          "text": "Assigning @v=0 before the SELECT is sufficient even if SELECT still assigns SUM(amount).",
+          "correct": false,
+          "why": "The aggregate SELECT returns one row containing NULL and overwrites the initial value."
+        },
+        {
+          "text": "The function can be used in SELECT dbo.fnDue(8) when defined with that name and scalar return type.",
+          "correct": true,
+          "why": "A scalar UDF can be invoked in an expression."
+        },
+        {
+          "text": "COALESCE(SUM(amount),0) meets the empty-input requirement.",
+          "correct": true,
+          "why": "It replaces the empty aggregate result with zero."
+        }
+      ],
+      "explanation": "An aggregate SELECT without GROUP BY still produces an aggregate result row on empty input.",
+      "source": "Lecture 07, slides 20–23"
+    },
+    {
+      "id": "p3q18",
+      "type": "multi",
+      "topic": "OUTPUT parameters",
+      "scenario": "dbo.GetRange declares @dept int, @lo decimal(10,2) OUTPUT, @hi decimal(10,2) OUTPUT. It assigns salary minimum and maximum. Department 4 contains salaries 900 and 1400. The caller executes the code below.",
+      "prompt": "Which caller-side facts are correct?",
+      "options": [
+        {
+          "text": "@low remains -1.",
+          "correct": true,
+          "why": "Its initial caller value is unchanged when OUTPUT is omitted at the call."
+        },
+        {
+          "text": "@high becomes 1400.",
+          "correct": true,
+          "why": "The parameter and call both specify OUTPUT."
+        },
+        {
+          "text": "Adding OUTPUT after @low in the EXEC call allows the minimum to be copied back.",
+          "correct": true,
+          "why": "Output direction must be requested at the call as well."
+        },
+        {
+          "text": "The procedure RETURN status automatically contains the maximum salary.",
+          "correct": false,
+          "why": "RETURN status and output parameters are separate channels."
+        },
+        {
+          "text": "@low becomes 900.",
+          "correct": false,
+          "why": "The call omitted OUTPUT for that argument, so the changed value is not copied back."
+        }
+      ],
+      "explanation": "A procedure can run successfully while one caller variable remains unchanged because OUTPUT was omitted.",
+      "source": "Lecture 07, slides 26–28",
+      "code": "DECLARE @low decimal(10,2)=-1, @high decimal(10,2)=-1;\nEXEC dbo.GetRange @dept=4,@lo=@low,@hi=@high OUTPUT;"
+    },
+    {
+      "id": "p3q19",
+      "type": "multi",
+      "topic": "Percentage procedure",
+      "scenario": "Salary is decimal(10,2), currently 1000 for one employee. A procedure parameter @pct is int and the intended increase is 10 percent. The body uses SET salary=salary+salary*(@pct/100). Assume arithmetic is ordinary SQL Server T-SQL and no triggers alter the result.",
+      "prompt": "Which statements are valid?",
+      "options": [
+        {
+          "text": "Calling the current procedure ten times with @pct=10 will eventually increase salary.",
+          "correct": false,
+          "why": "Each call again adds zero."
+        },
+        {
+          "text": "Using @pct/100.0 avoids the integer-division problem.",
+          "correct": true,
+          "why": "The decimal divisor gives a fractional percentage."
+        },
+        {
+          "text": "Passing @pct=10 produces salary 1100 with the current expression.",
+          "correct": false,
+          "why": "Integer division calculates 10/100 as zero."
+        },
+        {
+          "text": "With the current expression and @pct=10, salary remains 1000.",
+          "correct": true,
+          "why": "The computed addition is 1000*0."
+        },
+        {
+          "text": "Changing the parameter to decimal(5,2) is another valid repair for this example.",
+          "correct": true,
+          "why": "Decimal division preserves 0.10."
+        }
+      ],
+      "explanation": "Check the types inside a subexpression before considering the type of the final assignment.",
+      "source": "Lecture 07, slides 12–14, 24–25"
+    },
+    {
+      "id": "p3q20",
+      "type": "multi",
+      "topic": "Trigger granularity",
+      "scenario": "Account has two rows: (1,100), (2,200). An AFTER UPDATE trigger declares scalar @id and @b, assigns SELECT @id=accountNo,@b=balance FROM inserted, then inserts one audit row using those variables. One UPDATE statement increases both balances by 10.",
+      "prompt": "Which findings are correct?",
+      "options": [
+        {
+          "text": "The scalar assignment is a reliable way to audit both accounts.",
+          "correct": false,
+          "why": "A scalar pair cannot represent two affected rows."
+        },
+        {
+          "text": "INSERT INTO AccountAudit(accountNo,balance) SELECT accountNo,balance FROM inserted records both new balances.",
+          "correct": true,
+          "why": "The set-based INSERT processes all affected rows."
+        },
+        {
+          "text": "The trigger is guaranteed to run once for account 1 and once for account 2.",
+          "correct": false,
+          "why": "SQL Server DML triggers fire per statement, not separately per affected row."
+        },
+        {
+          "text": "Without ORDER BY, the scalar assignment is guaranteed to choose the lowest accountNo.",
+          "correct": false,
+          "why": "There is no guaranteed row ordering or guaranteed choice of lowest account."
+        },
+        {
+          "text": "inserted contains both new account rows.",
+          "correct": true,
+          "why": "The statement affects two rows, so both appear in inserted."
+        }
+      ],
+      "explanation": "The lecture’s scalar audit pattern must be repaired for statements affecting several rows.",
+      "source": "Lecture 07, slides 29–37"
+    },
+    {
+      "id": "p3q21",
+      "type": "multi",
+      "topic": "Old versus new state",
+      "scenario": "A single UPDATE moves two Fine rows from member 1 to member 2 and changes their amounts. An AFTER UPDATE trigger must recalculate both members’ stored balances from current Fine rows. No concurrent transaction is involved.",
+      "prompt": "Which design choices or observations are correct?",
+      "options": [
+        {
+          "text": "Recalculate member IDs from SELECT mid FROM inserted UNION SELECT mid FROM deleted.",
+          "correct": true,
+          "why": "The union identifies both old and new owners without duplicates."
+        },
+        {
+          "text": "A recalculation must handle member 1 having no remaining fines by setting its balance to zero.",
+          "correct": true,
+          "why": "Otherwise a stale nonzero balance may remain."
+        },
+        {
+          "text": "deleted contains the old member IDs and amounts.",
+          "correct": true,
+          "why": "For UPDATE, deleted preserves the pre-update row images."
+        },
+        {
+          "text": "Recalculate only member IDs from inserted.",
+          "correct": false,
+          "why": "This misses the old owner, member 1."
+        },
+        {
+          "text": "inserted contains the new member IDs and amounts.",
+          "correct": true,
+          "why": "It represents post-update rows."
+        }
+      ],
+      "explanation": "An update can change both the amount and the grouping key; maintain every group touched by either version.",
+      "source": "Lecture 07, slides 31–37"
+    },
+    {
+      "id": "p3q22",
+      "type": "multi",
+      "topic": "Multirow business rule",
+      "scenario": "Works(eid,did) has a composite primary key. An employee may work in at most two departments. Before an INSERT, employee 7 works in one department. A single statement inserts two further distinct departments for employee 7. An AFTER INSERT trigger tests the rule.",
+      "prompt": "Which checks are appropriate?",
+      "options": [
+        {
+          "text": "The primary key alone prevents employee 7 from gaining a third distinct department.",
+          "correct": false,
+          "why": "The key prevents duplicate pairs, not a maximum number of pairs."
+        },
+        {
+          "text": "Check every distinct employee in inserted rather than assigning one employee to a scalar variable.",
+          "correct": true,
+          "why": "One statement can affect several employees."
+        },
+        {
+          "text": "The trigger should accept the statement because each inserted row is individually valid.",
+          "correct": false,
+          "why": "The business rule constrains the combined set, not a single row."
+        },
+        {
+          "text": "Count only rows in inserted and reject when that count exceeds two.",
+          "correct": false,
+          "why": "Two new rows plus one existing row violate the rule although inserted contains only two."
+        },
+        {
+          "text": "Group the current Works rows for affected employee IDs and reject any COUNT(*)>2.",
+          "correct": true,
+          "why": "Current base-table rows in an AFTER trigger include the inserted assignments."
+        }
+      ],
+      "explanation": "A set-level limit requires counting persisted state after the whole statement and checking all affected owners.",
+      "source": "Lecture 07, slides 29–38"
+    },
+    {
+      "id": "p3q23",
+      "type": "multi",
+      "topic": "AFTER versus INSTEAD OF",
+      "scenario": "A read-facing joined view is deliberately not directly updatable for the requested operation. The team wants a trigger to translate an attempted INSERT on that view into explicitly chosen inserts on base tables.",
+      "prompt": "Which statements are correct?",
+      "options": [
+        {
+          "text": "The base inserts must be performed by the replacement logic if they are required.",
+          "correct": true,
+          "why": "INSTEAD OF does not automatically perform the original operation afterward."
+        },
+        {
+          "text": "The trigger still needs to consider multiple rows in inserted.",
+          "correct": true,
+          "why": "The attempted statement can supply several rows."
+        },
+        {
+          "text": "Defining an INSTEAD OF trigger makes all integrity constraints on base tables irrelevant.",
+          "correct": false,
+          "why": "Base-table writes made by the trigger still encounter their constraints."
+        },
+        {
+          "text": "An INSTEAD OF INSERT trigger can implement that translation.",
+          "correct": true,
+          "why": "It replaces the attempted operation with defined trigger logic."
+        },
+        {
+          "text": "An AFTER INSERT trigger on the view is the correct SQL Server mechanism.",
+          "correct": false,
+          "why": "SQL Server does not support AFTER DML triggers on views."
+        }
+      ],
+      "explanation": "Choose replacement behaviour, then explicitly implement the underlying changes while respecting base-table integrity.",
+      "source": "Lecture 07, slides 31–35"
+    },
+    {
+      "id": "p3q24",
+      "type": "multi",
+      "topic": "Audit state after DELETE",
+      "scenario": "AccountAudit(accountNo,oldBalance) must record the values removed by a DELETE statement. The trigger is AFTER DELETE, and the statement may delete many rows.",
+      "prompt": "Which audit statements or design decisions are correct?",
+      "options": [
+        {
+          "text": "The audit should use the old balances from deleted, rather than current rows from Account.",
+          "correct": true,
+          "why": "The deleted rows are absent from the current base table; deleted preserves their pre-delete values."
+        },
+        {
+          "text": "INSERT INTO AccountAudit SELECT accountNo,balance FROM inserted;",
+          "correct": false,
+          "why": "inserted has no deleted-row images for a DELETE event."
+        },
+        {
+          "text": "INSERT INTO AccountAudit(accountNo,oldBalance) SELECT accountNo,balance FROM deleted;",
+          "correct": true,
+          "why": "deleted contains the pre-delete image of every removed row."
+        },
+        {
+          "text": "The audit must handle all rows in deleted even when one DELETE statement removes many accounts.",
+          "correct": true,
+          "why": "The trigger fires for the statement and deleted can contain many rows."
+        },
+        {
+          "text": "INSERT INTO AccountAudit(accountNo,oldBalance) SELECT accountNo,balance FROM Account;",
+          "correct": false,
+          "why": "The removed rows are no longer in Account, and this would audit remaining accounts."
+        }
+      ],
+      "explanation": "For a DELETE audit, use a set-based INSERT…SELECT from deleted.",
+      "source": "Lecture 07, slides 34–37"
+    },
+    {
+      "id": "p3q25",
+      "type": "multi",
+      "topic": "Two-sided business rule enforcement",
+      "scenario": "Employee(eid,salary,did) and Department(did,managerID) support a rule: every non-manager employee must earn no more than their department manager. Each department has an existing manager. A trigger on Employee checks only rows whose salary just increased against their current managers.",
+      "prompt": "Which changes can expose a gap, or correctly address gaps, in this trigger design?",
+      "options": [
+        {
+          "text": "Changing Department.managerID to an employee with a lower salary.",
+          "correct": true,
+          "why": "The relevant manager relationship changes in another table."
+        },
+        {
+          "text": "Changing an employee’s did to a department with a lower-paid manager without increasing the employee salary.",
+          "correct": true,
+          "why": "The comparison target changes even though salary does not increase."
+        },
+        {
+          "text": "Lowering a manager’s salary below an existing subordinate’s salary.",
+          "correct": true,
+          "why": "The subordinate row need not be updated, and an increase-only trigger misses the manager reduction."
+        },
+        {
+          "text": "Checking every rule-changing operation, including affected departments and employees, can close these gaps.",
+          "correct": true,
+          "why": "The rule depends on more than one column, row and table."
+        },
+        {
+          "text": "Increasing a subordinate’s salary above the unchanged current manager salary, if that row is properly checked.",
+          "correct": false,
+          "why": "That is exactly the case the stated check handles."
+        }
+      ],
+      "explanation": "A cross-row rule must be maintained when either side of the comparison or the connecting relationship changes.",
+      "source": "Lecture 07, slides 29, 38–40"
+    }
+  ]
+}

@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1300" viewBox="0 0 1600 1300" role="img">
+<title>Research network · EER scenario U</title>
+<desc>Department projects, weak tasks, overlapping person roles, mentorship and reviews of participation.</desc>
+<style>text{font-family:Arial,sans-serif;fill:#211638} .title{font-size:29px;font-weight:bold}.label{font-size:20px;font-weight:bold}.attr{font-size:17px}.small{font-size:16px}.edge{stroke:#682fbe;stroke-width:2.5;fill:none}</style>
+<rect width="1600" height="1300" fill="#faf8ff"/>
+<text x="35" y="46" class="title" text-anchor="start" >Research network · EER scenario U</text>
+<text x="35" y="77" class="small" text-anchor="start" >Department projects, weak tasks, overlapping person roles, mentorship and reviews of participation.</text>
+<rect x="24" y="100" width="1552" height="290" rx="14" fill="white" stroke="#d8cbed"/>
+<text x="45" y="130" class="label" text-anchor="start" >A · Project ownership and weak tasks</text>
+<rect x="70" y="185" width="230" height="122" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="185.0" y="214" class="label" text-anchor="middle" >Department</text>
+<text x="85" y="240" class="attr" text-anchor="start" text-decoration="underline">did</text>
+<text x="85" y="264" class="attr" text-anchor="start" >name</text>
+<text x="85" y="288" class="attr" text-anchor="start" >{phone}</text>
+<rect x="645" y="185" width="230" height="98" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="760.0" y="214" class="label" text-anchor="middle" >Project</text>
+<text x="660" y="240" class="attr" text-anchor="start" text-decoration="underline">pid</text>
+<text x="660" y="264" class="attr" text-anchor="start" >title</text>
+<rect x="1260" y="185" width="230" height="98" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<rect x="1265" y="190" width="220" height="88" fill="none" stroke="#682fbe" stroke-width="1.5"/>
+<text x="1375.0" y="214" class="label" text-anchor="middle" >Task</text>
+<text x="1275" y="240" class="attr" text-anchor="start" >taskNo (partial key)</text>
+<text x="1275" y="264" class="attr" text-anchor="start" >description</text>
+<line x1="1275" y1="244" x2="1329" y2="244" stroke="#211638" stroke-dasharray="4 3"/>
+<text x="1275" y="305" class="small" text-anchor="start" >Partial key: taskNo</text>
+<path d="M 470 193 L 570 230 L 470 267 L 370 230 Z" fill="#ffe7f1" stroke="#a52f70" stroke-width="2"/>
+<text x="470" y="236" class="attr" text-anchor="middle" >Owns</text>
+<polyline class="edge" points="300,230 370,230"/>
+<rect x="306" y="198" width="53" height="23" fill="white"/>
+<text x="310" y="216" class="small" text-anchor="start" >(0,N)</text>
+<polyline class="edge" points="570,230 645,230"/>
+<rect x="579" y="198" width="53" height="23" fill="white"/>
+<text x="583" y="216" class="small" text-anchor="start" >(1,1)</text>
+<path d="M 1070 193 L 1170 230 L 1070 267 L 970 230 Z" fill="#ffe7f1" stroke="#a52f70" stroke-width="2"/>
+<path d="M 1070 200 L 1156 230 L 1070 260 L 984 230 Z" fill="none" stroke="#a52f70"/>
+<text x="1070" y="236" class="attr" text-anchor="middle" >Contains</text>
+<polyline class="edge" points="875,230 970,230"/>
+<rect x="884" y="198" width="53" height="23" fill="white"/>
+<text x="888" y="216" class="small" text-anchor="start" >(0,N)</text>
+<polyline class="edge" points="1170,230 1260,230"/>
+<rect x="1176" y="198" width="53" height="23" fill="white"/>
+<text x="1180" y="216" class="small" text-anchor="start" >(1,1)</text>
+<text x="75" y="350" class="small" text-anchor="start" >{phone} is multivalued. A task number is unique only inside one project. Every project has exactly one owning department.</text>
+<rect x="24" y="410" width="1552" height="370" rx="14" fill="white" stroke="#d8cbed"/>
+<text x="45" y="440" class="label" text-anchor="start" >B · People, overlapping roles and recursive mentorship</text>
+<rect x="600" y="465" width="230" height="98" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="715.0" y="494" class="label" text-anchor="middle" >Person</text>
+<text x="615" y="520" class="attr" text-anchor="start" text-decoration="underline">personID</text>
+<text x="615" y="544" class="attr" text-anchor="start" >name</text>
+<rect x="260" y="650" width="230" height="98" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="375.0" y="679" class="label" text-anchor="middle" >Staff</text>
+<text x="275" y="705" class="attr" text-anchor="start" >personID (inherited)</text>
+<text x="275" y="729" class="attr" text-anchor="start" >salary</text>
+<rect x="1030" y="650" width="230" height="98" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="1145.0" y="679" class="label" text-anchor="middle" >Student</text>
+<text x="1045" y="705" class="attr" text-anchor="start" >personID (inherited)</text>
+<text x="1045" y="729" class="attr" text-anchor="start" >degree</text>
+<polyline class="edge" points="715,563 715,588"/>
+<circle cx="715" cy="610" r="22" fill="#fff3c4" stroke="#682fbe" stroke-width="2"/>
+<text x="715" y="617" class="label" text-anchor="middle" >o</text>
+<polyline class="edge" points="693,610 375,610 375,650"/>
+<polyline class="edge" points="737,610 1145,610 1145,650"/>
+<text x="760" y="639" class="small" text-anchor="start" >PARTIAL: a Person may belong to neither role.</text>
+<path d="M 360 473 L 460 510 L 360 547 L 260 510 Z" fill="#ffe7f1" stroke="#a52f70" stroke-width="2"/>
+<text x="360" y="516" class="attr" text-anchor="middle" >Mentors</text>
+<polyline class="edge" points="600,485 505,485 505,510 460,510"/>
+<rect x="466" y="447" width="116" height="23" fill="white"/>
+<text x="470" y="465" class="small" text-anchor="start" >mentor (0,N)</text>
+<polyline class="edge" points="600,540 490,540 490,570 220,570 220,510 260,510"/>
+<rect x="241" y="580" width="116" height="23" fill="white"/>
+<text x="245" y="598" class="small" text-anchor="start" >mentee (0,1)</text>
+<text x="900" y="480" class="small" text-anchor="start" >A person may be Staff and Student simultaneously.</text>
+<text x="900" y="505" class="small" text-anchor="start" >Each mentee has at most one mentor.</text>
+<text x="900" y="530" class="small" text-anchor="start" >A mentor may guide many mentees.</text>
+<text x="900" y="555" class="small" text-anchor="start" >Self-mentoring is prohibited; longer cycles are not addressed.</text>
+<rect x="24" y="800" width="1552" height="410" rx="14" fill="white" stroke="#d8cbed"/>
+<text x="45" y="830" class="label" text-anchor="start" >C · Aggregation: staff review a particular person–project participation</text>
+<rect x="65" y="866" width="945" height="240" rx="10" fill="#f8f4fc" stroke="#682fbe" stroke-dasharray="8 5" stroke-width="2"/>
+<rect x="90" y="920" width="230" height="74" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="205.0" y="949" class="label" text-anchor="middle" >Person</text>
+<text x="105" y="975" class="attr" text-anchor="start" text-decoration="underline">personID</text>
+<rect x="750" y="920" width="230" height="74" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="865.0" y="949" class="label" text-anchor="middle" >Project</text>
+<text x="765" y="975" class="attr" text-anchor="start" text-decoration="underline">pid</text>
+<path d="M 535 925 L 635 962 L 535 999 L 435 962 Z" fill="#ffe7f1" stroke="#a52f70" stroke-width="2"/>
+<text x="535" y="968" class="attr" text-anchor="middle" >Participates</text>
+<polyline class="edge" points="320,962 435,962"/>
+<rect x="341" y="929" width="53" height="23" fill="white"/>
+<text x="345" y="947" class="small" text-anchor="start" >(0,N)</text>
+<polyline class="edge" points="635,962 750,962"/>
+<rect x="656" y="929" width="53" height="23" fill="white"/>
+<text x="660" y="947" class="small" text-anchor="start" >(0,N)</text>
+<text x="535" y="1033" class="small" text-anchor="middle" >relationship attribute: hours</text>
+<rect x="1270" y="925" width="230" height="74" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="1385.0" y="954" class="label" text-anchor="middle" >Staff</text>
+<text x="1285" y="980" class="attr" text-anchor="start" >personID (inherited)</text>
+<path d="M 1140 1043 L 1240 1080 L 1140 1117 L 1040 1080 Z" fill="#ffe7f1" stroke="#a52f70" stroke-width="2"/>
+<text x="1140" y="1086" class="attr" text-anchor="middle" >Reviews</text>
+<polyline class="edge" points="1010,1055 1040,1055 1040,1080"/>
+<rect x="926" y="1127" width="53" height="23" fill="white"/>
+<text x="930" y="1145" class="small" text-anchor="start" >(0,N)</text>
+<polyline class="edge" points="1385,999 1385,1080 1240,1080"/>
+<rect x="1396" y="1032" width="53" height="23" fill="white"/>
+<text x="1400" y="1050" class="small" text-anchor="start" >(0,N)</text>
+<text x="1060" y="1165" class="small" text-anchor="start" >Reviews has attribute verdict.</text>
+<text x="1060" y="1190" class="small" text-anchor="start" >One review per (staff, person, project).</text>
+<text x="90" y="892" class="small" text-anchor="start" >Aggregation: one person’s participation in one project</text>
+<text x="35" y="1240" class="small" text-anchor="start" >Notation: each (min,max) sits beside the entity whose participation it describes. N = many.</text>
+<text x="35" y="1265" class="small" text-anchor="start" >Repeated entity boxes refer to the same entity type. Attributes are listed inside boxes; underlining marks a strong key.</text>
+<text x="35" y="1290" class="small" text-anchor="start" >Double box / diamond = weak entity / identifying relationship. Read the written rules together with the diagram.</text>
+</svg>

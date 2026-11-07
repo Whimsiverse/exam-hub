@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1300" viewBox="0 0 1600 1300" role="img">
+<title>Clinical study network · EER scenario H</title>
+<desc>Hospitals, weak wards, total disjoint clinician roles, repeat admissions and observations of trial enrolments.</desc>
+<style>text{font-family:Arial,sans-serif;fill:#211638} .title{font-size:29px;font-weight:bold}.label{font-size:20px;font-weight:bold}.attr{font-size:17px}.small{font-size:16px}.edge{stroke:#682fbe;stroke-width:2.5;fill:none}</style>
+<rect width="1600" height="1300" fill="#faf8ff"/>
+<text x="35" y="46" class="title" text-anchor="start" >Clinical study network · EER scenario H</text>
+<text x="35" y="77" class="small" text-anchor="start" >Hospitals, weak wards, total disjoint clinician roles, repeat admissions and observations of trial enrolments.</text>
+<rect x="24" y="100" width="1552" height="300" rx="14" fill="white" stroke="#d8cbed"/>
+<text x="45" y="130" class="label" text-anchor="start" >A · Hospitals, weak wards and clinician assignment</text>
+<rect x="80" y="185" width="230" height="122" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="195.0" y="214" class="label" text-anchor="middle" >Hospital</text>
+<text x="95" y="240" class="attr" text-anchor="start" text-decoration="underline">hid</text>
+<text x="95" y="264" class="attr" text-anchor="start" >name</text>
+<text x="95" y="288" class="attr" text-anchor="start" >{phone}</text>
+<rect x="660" y="185" width="230" height="98" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<rect x="665" y="190" width="220" height="88" fill="none" stroke="#682fbe" stroke-width="1.5"/>
+<text x="775.0" y="214" class="label" text-anchor="middle" >Ward</text>
+<text x="675" y="240" class="attr" text-anchor="start" >wardNo (partial key)</text>
+<text x="675" y="264" class="attr" text-anchor="start" >capacity</text>
+<line x1="675" y1="244" x2="729" y2="244" stroke="#211638" stroke-dasharray="4 3"/>
+<text x="675" y="305" class="small" text-anchor="start" >Partial key: wardNo</text>
+<rect x="1260" y="185" width="230" height="98" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="1375.0" y="214" class="label" text-anchor="middle" >Clinician</text>
+<text x="1275" y="240" class="attr" text-anchor="start" text-decoration="underline">cid</text>
+<text x="1275" y="264" class="attr" text-anchor="start" >name</text>
+<path d="M 475 193 L 575 230 L 475 267 L 375 230 Z" fill="#ffe7f1" stroke="#a52f70" stroke-width="2"/>
+<path d="M 475 200 L 561 230 L 475 260 L 389 230 Z" fill="none" stroke="#a52f70"/>
+<text x="475" y="236" class="attr" text-anchor="middle" >Contains</text>
+<polyline class="edge" points="310,230 375,230"/>
+<rect x="311" y="196" width="53" height="23" fill="white"/>
+<text x="315" y="214" class="small" text-anchor="start" >(1,N)</text>
+<polyline class="edge" points="575,230 660,230"/>
+<rect x="586" y="196" width="53" height="23" fill="white"/>
+<text x="590" y="214" class="small" text-anchor="start" >(1,1)</text>
+<path d="M 1090 303 L 1190 340 L 1090 377 L 990 340 Z" fill="#ffe7f1" stroke="#a52f70" stroke-width="2"/>
+<text x="1090" y="346" class="attr" text-anchor="middle" >Assigned</text>
+<polyline class="edge" points="1260,260 1190,260 1190,340"/>
+<rect x="1196" y="273" width="53" height="23" fill="white"/>
+<text x="1200" y="291" class="small" text-anchor="start" >(1,1)</text>
+<polyline class="edge" points="190,307 190,340 990,340"/>
+<rect x="206" y="311" width="53" height="23" fill="white"/>
+<text x="210" y="329" class="small" text-anchor="start" >(0,N)</text>
+<text x="65" y="380" class="small" text-anchor="start" >Every clinician belongs to exactly one hospital. Each hospital has at least one ward; phones are multivalued.</text>
+<rect x="24" y="420" width="1552" height="340" rx="14" fill="white" stroke="#d8cbed"/>
+<text x="45" y="450" class="label" text-anchor="start" >B · Clinician specialisation and doctor supervision</text>
+<rect x="650" y="470" width="230" height="74" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="765.0" y="499" class="label" text-anchor="middle" >Clinician</text>
+<text x="665" y="525" class="attr" text-anchor="start" text-decoration="underline">cid</text>
+<rect x="270" y="640" width="230" height="98" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="385.0" y="669" class="label" text-anchor="middle" >Doctor</text>
+<text x="285" y="695" class="attr" text-anchor="start" >cid (inherited)</text>
+<text x="285" y="719" class="attr" text-anchor="start" >specialty</text>
+<rect x="1060" y="640" width="230" height="98" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="1175.0" y="669" class="label" text-anchor="middle" >Nurse</text>
+<text x="1075" y="695" class="attr" text-anchor="start" >cid (inherited)</text>
+<text x="1075" y="719" class="attr" text-anchor="start" >grade</text>
+<polyline class="edge" points="760,544 760,567"/>
+<polyline class="edge" points="770,544 770,567"/>
+<circle cx="765" cy="590" r="23" fill="#fff3c4" stroke="#682fbe" stroke-width="2"/>
+<text x="765" y="597" class="label" text-anchor="middle" >d</text>
+<polyline class="edge" points="742,590 385,590 385,640"/>
+<polyline class="edge" points="788,590 1175,590 1175,640"/>
+<text x="1030" y="488" class="small" text-anchor="start" >TOTAL and DISJOINT: every clinician is</text>
+<text x="1030" y="513" class="small" text-anchor="start" >exactly one of Doctor or Nurse.</text>
+<text x="1030" y="538" class="small" text-anchor="start" >Each doctor has zero or one supervisor;</text>
+<text x="1030" y="563" class="small" text-anchor="start" >a supervisor may supervise many doctors.</text>
+<path d="M 150 483 L 250 520 L 150 557 L 50 520 Z" fill="#ffe7f1" stroke="#a52f70" stroke-width="2"/>
+<text x="150" y="526" class="attr" text-anchor="middle" >Supervises</text>
+<polyline class="edge" points="270,670 40,670 40,520 50,520"/>
+<rect x="61" y="684" width="152" height="23" fill="white"/>
+<text x="65" y="702" class="small" text-anchor="start" >supervisor (0,N)</text>
+<polyline class="edge" points="300,640 300,520 250,520"/>
+<rect x="286" y="545" width="152" height="23" fill="white"/>
+<text x="290" y="563" class="small" text-anchor="start" >supervised (0,1)</text>
+<rect x="24" y="780" width="1552" height="425" rx="14" fill="white" stroke="#d8cbed"/>
+<text x="45" y="810" class="label" text-anchor="start" >C · Patients, trials, repeated admissions and weak observations</text>
+<rect x="45" y="824" width="875" height="191" rx="10" fill="#f8f4fc" stroke="#682fbe" stroke-dasharray="8 5" stroke-width="2"/>
+<text x="475" y="845" class="small" text-anchor="middle" >Aggregation: one patient’s enrolment in one trial</text>
+<rect x="60" y="850" width="230" height="98" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="175.0" y="879" class="label" text-anchor="middle" >Patient</text>
+<text x="75" y="905" class="attr" text-anchor="start" text-decoration="underline">patientID</text>
+<text x="75" y="929" class="attr" text-anchor="start" >name</text>
+<rect x="660" y="850" width="230" height="122" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="775.0" y="879" class="label" text-anchor="middle" >Trial</text>
+<text x="675" y="905" class="attr" text-anchor="start" text-decoration="underline">trialID</text>
+<text x="675" y="929" class="attr" text-anchor="start" >topic</text>
+<text x="675" y="953" class="attr" text-anchor="start" >leadDoctor: exactly 1</text>
+<path d="M 475 858 L 575 895 L 475 932 L 375 895 Z" fill="#ffe7f1" stroke="#a52f70" stroke-width="2"/>
+<text x="475" y="901" class="attr" text-anchor="middle" >Enrolment</text>
+<polyline class="edge" points="290,895 375,895"/>
+<rect x="296" y="861" width="53" height="23" fill="white"/>
+<text x="300" y="879" class="small" text-anchor="start" >(0,N)</text>
+<polyline class="edge" points="575,895 660,895"/>
+<rect x="586" y="861" width="53" height="23" fill="white"/>
+<text x="590" y="879" class="small" text-anchor="start" >(0,N)</text>
+<text x="260" y="977" class="small" text-anchor="start" >attribute: enrolledOn</text>
+<rect x="1240" y="855" width="230" height="98" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<rect x="1245" y="860" width="220" height="88" fill="none" stroke="#682fbe" stroke-width="1.5"/>
+<text x="1355.0" y="884" class="label" text-anchor="middle" >Observation</text>
+<text x="1255" y="910" class="attr" text-anchor="start" >obsNo (partial key)</text>
+<text x="1255" y="934" class="attr" text-anchor="start" >reading</text>
+<line x1="1255" y1="914" x2="1300" y2="914" stroke="#211638" stroke-dasharray="4 3"/>
+<text x="1255" y="975" class="small" text-anchor="start" >Partial key: obsNo</text>
+<path d="M 1080 863 L 1180 900 L 1080 937 L 980 900 Z" fill="#ffe7f1" stroke="#a52f70" stroke-width="2"/>
+<path d="M 1080 870 L 1166 900 L 1080 930 L 994 900 Z" fill="none" stroke="#a52f70"/>
+<text x="1080" y="906" class="attr" text-anchor="middle" >Records</text>
+<polyline class="edge" points="475,932 475,994 970,994 970,900 980,900"/>
+<rect x="846" y="965" width="53" height="23" fill="white"/>
+<text x="850" y="983" class="small" text-anchor="start" >(0,N)</text>
+<polyline class="edge" points="1180,900 1240,900"/>
+<rect x="1178" y="864" width="53" height="23" fill="white"/>
+<text x="1182" y="882" class="small" text-anchor="start" >(1,1)</text>
+<rect x="90" y="1045" width="230" height="98" rx="2" fill="#eef1ff" stroke="#682fbe" stroke-width="2.5"/>
+<text x="205.0" y="1074" class="label" text-anchor="middle" >Admission</text>
+<text x="105" y="1100" class="attr" text-anchor="start" text-decoration="underline">admissionID</text>
+<text x="105" y="1124" class="attr" text-anchor="start" >admittedOn</text>
+<text x="370" y="1067" class="small" text-anchor="start" >Each Admission belongs to exactly one Patient, one Ward and one attending Doctor.</text>
+<text x="370" y="1092" class="small" text-anchor="start" >A Patient, Ward or Doctor may be linked to zero or many Admissions.</text>
+<text x="370" y="1117" class="small" text-anchor="start" >Repeat patient–ward admissions are allowed; admissionID distinguishes events.</text>
+<text x="370" y="1142" class="small" text-anchor="start" >Every Trial has exactly one lead Doctor; a Doctor may lead zero or many Trials.</text>
+<text x="370" y="1167" class="small" text-anchor="start" >Observation numbers are unique only within one patient’s enrolment in one trial.</text>
+<text x="35" y="1240" class="small" text-anchor="start" >Notation: each (min,max) sits beside the entity whose participation it describes. N = many.</text>
+<text x="35" y="1265" class="small" text-anchor="start" >Repeated entity boxes refer to the same entity type. Attributes are listed inside boxes; underlining marks a strong key.</text>
+<text x="35" y="1290" class="small" text-anchor="start" >Double box / diamond = weak entity / identifying relationship. Read the written rules together with the diagram.</text>
+</svg>

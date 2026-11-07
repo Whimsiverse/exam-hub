@@ -1,0 +1,932 @@
+{
+  "id": 1,
+  "title": "Foundations & SQL reasoning",
+  "lectures": "01–03",
+  "questions": [
+    {
+      "id": "p1q1",
+      "type": "multi",
+      "topic": "Design decisions",
+      "scenario": "A clinic proposes storing patients, appointments and invoices in separate spreadsheets. Staff often overwrite another user’s changes. The team proposes a DBMS.",
+      "prompt": "Which conclusions are justified?",
+      "code": null,
+      "options": [
+        {
+          "text": "Receptionists need a duplicate patient table in order to see fewer patient columns.",
+          "correct": false,
+          "why": "A restricted view can expose fewer columns without duplicating patient records."
+        },
+        {
+          "text": "Access controls can give receptionists a narrower view than clinicians.",
+          "correct": true,
+          "why": "Views and permissions can restrict exposed data."
+        },
+        {
+          "text": "Keeping a continuously updated replica is enough to recover yesterday’s data after an accidental deletion, even without retained history.",
+          "correct": false,
+          "why": "The accidental deletion can propagate to the replica; retained backups or history are needed for an earlier state."
+        },
+        {
+          "text": "Database design must still identify patient and appointment identities.",
+          "correct": true,
+          "why": "A DBMS does not discover the correct business model automatically."
+        },
+        {
+          "text": "Concurrency control can reduce overwrite risk, but application transactions must use it appropriately.",
+          "correct": true,
+          "why": "A DBMS provides coordination facilities; simply moving data does not prove every workflow uses them correctly."
+        }
+      ],
+      "explanation": "Separate facilities the DBMS provides from policies and transactions the team must still design. A replica is not automatically a recoverable history.",
+      "source": "Lecture 01, slides 6, 9–12, 20; recovery/concurrency application."
+    },
+    {
+      "id": "p1q2",
+      "type": "multi",
+      "topic": "Independence",
+      "scenario": "A library moves table storage from one disk layout to another. Its table definitions and application queries remain unchanged. Later it adds a column while keeping an existing user view unchanged.",
+      "prompt": "Which interpretations follow?",
+      "code": null,
+      "options": [
+        {
+          "text": "Preserving the view after adding a column can illustrate logical independence.",
+          "correct": true,
+          "why": "The user interface can remain stable despite a conceptual schema extension."
+        },
+        {
+          "text": "Preserving one existing view proves that an application querying the new column directly will also need no change.",
+          "correct": false,
+          "why": "Independence of one interface does not establish independence for every application interface."
+        },
+        {
+          "text": "The user view and physical storage are different abstraction levels.",
+          "correct": true,
+          "why": "External and internal representations serve different concerns."
+        },
+        {
+          "text": "The disk change illustrates physical data independence.",
+          "correct": true,
+          "why": "Storage changed without a logical interface change."
+        },
+        {
+          "text": "Adding the new table column changes the logical schema even though the old user view stays stable.",
+          "correct": true,
+          "why": "A conceptual schema extension can be hidden behind a stable external view."
+        }
+      ],
+      "explanation": "Track which abstraction level changed and which interface remained stable. Stability of one view is not a guarantee about every application.",
+      "source": "Lecture 01, slides 10–11; physical/logical independence application."
+    },
+    {
+      "id": "p1q3",
+      "type": "multi",
+      "topic": "Design phases",
+      "scenario": "A university team records that each course has one coordinator, draws an ER model, converts it to tables, then chooses indexes.",
+      "prompt": "Which reviews identify the appropriate work?",
+      "code": null,
+      "options": [
+        {
+          "text": "A correct ER diagram guarantees that every later relational mapping is free of redundancy, so refinement can be skipped.",
+          "correct": false,
+          "why": "The mapping still needs refinement; a sound conceptual model does not certify every implementation choice."
+        },
+        {
+          "text": "Performance and access-control requirements should first be collected after physical indexes have been selected.",
+          "correct": false,
+          "why": "Requirements analysis identifies performance and security constraints before later design choices are evaluated."
+        },
+        {
+          "text": "Confirm the coordinator rule during requirements analysis.",
+          "correct": true,
+          "why": "The rule should be established with stakeholders before implementing it."
+        },
+        {
+          "text": "Choose disk indexes as part of conceptual ER modelling.",
+          "correct": false,
+          "why": "Indexes are physical design choices."
+        },
+        {
+          "text": "Mapping the ER model to relational tables is logical design.",
+          "correct": true,
+          "why": "Logical design selects the database-model representation."
+        }
+      ],
+      "explanation": "Requirements constrain all later design decisions. Logical mapping, refinement, physical indexing and access design solve different problems.",
+      "source": "Lecture 01, slides 12–20."
+    },
+    {
+      "id": "p1q4",
+      "type": "multi",
+      "topic": "Hosting trade-offs",
+      "scenario": "A small team needs a hosted reservation database, has little operations staff, and must meet a specified backup retention policy. A vendor offers managed hosting.",
+      "prompt": "Which actions are justified?",
+      "code": null,
+      "options": [
+        {
+          "text": "Evaluate network latency and availability against reservation needs.",
+          "correct": true,
+          "why": "Remote access adds network and service dependencies."
+        },
+        {
+          "text": "Check whether the service actually meets the retention requirement.",
+          "correct": true,
+          "why": "Managed does not automatically mean every retention policy is satisfied."
+        },
+        {
+          "text": "If the provider manages database patches, the application team no longer needs to decide who may read reservation details.",
+          "correct": false,
+          "why": "Operational maintenance does not decide business authorization rules."
+        },
+        {
+          "text": "Compare operating effort and total cost, not only disk price.",
+          "correct": true,
+          "why": "Management effort is part of the hosting decision."
+        },
+        {
+          "text": "A managed cloud service can host a relational database; cloud hosting does not require a NoSQL model.",
+          "correct": true,
+          "why": "Hosting location and management model are distinct from the data model; the lecture lists relational cloud services."
+        }
+      ],
+      "explanation": "Choose hosting against the actual retention, latency, management and cost needs; neither location nor managed maintenance decides the data model or business permissions.",
+      "source": "Lecture 01, slides 20–25."
+    },
+    {
+      "id": "p1q5",
+      "type": "multi",
+      "topic": "Metadata and data-intensive workloads",
+      "scenario": "A telemetry service stores a million readings per hour but performs only simple arithmetic on each reading. A developer reads column types from the catalog. The DBA saves backups and the service has a two-minute recovery requirement.",
+      "prompt": "Which assessments follow?",
+      "code": null,
+      "options": [
+        {
+          "text": "Column definitions in the catalog are metadata.",
+          "correct": true,
+          "why": "They describe the structure and types of application data."
+        },
+        {
+          "text": "The service cannot be data-intensive because each calculation is simple.",
+          "correct": false,
+          "why": "Data-intensive workloads can be dominated by data volume, retrieval and storage rather than complex calculations."
+        },
+        {
+          "text": "The large reading stream makes storage throughput, retrieval and growth relevant design concerns.",
+          "correct": true,
+          "why": "The workload must reliably handle large and growing volumes of data."
+        },
+        {
+          "text": "Successful creation of a backup file alone proves the two-minute recovery requirement is met.",
+          "correct": false,
+          "why": "Recovery time depends on restoring and making the service usable; that must be evaluated separately."
+        },
+        {
+          "text": "Staff recovery procedures are outside the database system environment because they are not executable SQL.",
+          "correct": false,
+          "why": "The database system environment includes people and procedures, as well as hardware, software and data."
+        }
+      ],
+      "explanation": "Data-intensive does not mean computation-intensive. High data volume and modest arithmetic can still demand careful storage and recovery engineering.",
+      "source": "Lecture 01, slides 9–11, 26–30."
+    },
+    {
+      "id": "p1q6",
+      "type": "multi",
+      "topic": "CHECK and NULL",
+      "scenario": "A shop creates Product(pid int PRIMARY KEY, price decimal(8,2) NULL CHECK(price>=0)). No other constraints or triggers exist.",
+      "prompt": "Which inserts satisfy these constraints?",
+      "code": null,
+      "options": [
+        {
+          "text": "A previously unused pid with price -1.",
+          "correct": false,
+          "why": "The CHECK evaluates FALSE."
+        },
+        {
+          "text": "A previously unused pid with price 0.",
+          "correct": true,
+          "why": "Zero satisfies price>=0."
+        },
+        {
+          "text": "An already existing pid with a different valid price.",
+          "correct": false,
+          "why": "The primary key must remain unique."
+        },
+        {
+          "text": "A NULL pid with a valid price.",
+          "correct": false,
+          "why": "Primary-key columns cannot be NULL."
+        },
+        {
+          "text": "A previously unused pid with price NULL.",
+          "correct": true,
+          "why": "The price comparison is UNKNOWN, which CHECK does not reject; price is nullable."
+        }
+      ],
+      "explanation": "A primary key rejects NULL and duplicates. A nullable price with CHECK(price>=0) rejects negative values, but UNKNOWN does not fail the CHECK.",
+      "source": "Lecture 02, slides 6–7; SQL Server CHECK/NULL semantics."
+    },
+    {
+      "id": "p1q7",
+      "type": "multi",
+      "topic": "Constraint placement",
+      "scenario": "A developer wants an enrolment identified by the pair (sid,cid), with sid referencing Student and cid referencing Course.",
+      "prompt": "Which implementation decisions are valid?",
+      "code": null,
+      "options": [
+        {
+          "text": "An enabled FK may reference a parent table that will only be created later in the same batch.",
+          "correct": false,
+          "why": "The referenced parent must exist when the FK is established; create it first or add the FK later."
+        },
+        {
+          "text": "Use one FK for sid and a separate FK for cid.",
+          "correct": true,
+          "why": "The columns reference two different parent keys."
+        },
+        {
+          "text": "A composite primary key makes sid alone unique.",
+          "correct": false,
+          "why": "Only the complete pair must be unique."
+        },
+        {
+          "text": "Use one table-level PRIMARY KEY(sid,cid).",
+          "correct": true,
+          "why": "A composite key is expressed as one constraint over both columns."
+        },
+        {
+          "text": "Declare sid PRIMARY KEY and cid PRIMARY KEY as two independent primary keys.",
+          "correct": false,
+          "why": "A table has one primary-key constraint; these declarations do not create the intended pair key."
+        }
+      ],
+      "explanation": "The identity is one pair, not two independent unique columns. Referenced objects must exist when enabled references are created.",
+      "source": "Lecture 02, slides 6–8; Lab 03 constraints."
+    },
+    {
+      "id": "p1q8",
+      "type": "multi",
+      "topic": "Referential actions",
+      "scenario": "Dept has rows 10 and 20. Employee(eid PK,did NULL FK→Dept.did ON DELETE SET NULL) contains (1,10),(2,10),(3,20).",
+      "prompt": "After deleting Dept 10, which statements hold?",
+      "code": null,
+      "options": [
+        {
+          "text": "Dept 20 remains.",
+          "correct": true,
+          "why": "Only department 10 was deleted."
+        },
+        {
+          "text": "The action would work unchanged if did were NOT NULL.",
+          "correct": false,
+          "why": "SET NULL requires nullable referencing columns."
+        },
+        {
+          "text": "Employees 1 and 2 remain.",
+          "correct": true,
+          "why": "SET NULL changes the reference instead of deleting child rows."
+        },
+        {
+          "text": "Employees 1 and 2 have NULL did.",
+          "correct": true,
+          "why": "That is the specified referential action."
+        },
+        {
+          "text": "If ON DELETE CASCADE were used instead, employees 1 and 2 would be deleted with Dept 10.",
+          "correct": true,
+          "why": "CASCADE removes referencing child rows rather than setting their references to NULL."
+        }
+      ],
+      "explanation": "Trace the specified referential action separately from the parent deletion. SET NULL and CASCADE produce different child outcomes.",
+      "source": "Lecture 02, slide 7; referential-action application."
+    },
+    {
+      "id": "p1q9",
+      "type": "multi",
+      "topic": "NULL filtering",
+      "scenario": "Reading(rid PK,value NULL) contains (1,5),(2,NULL),(3,0).",
+      "prompt": "Which query/result claims are correct?",
+      "code": null,
+      "options": [
+        {
+          "text": "WHERE value=5 OR value IS NULL returns rid 1 and rid 2.",
+          "correct": true,
+          "why": "Each of those rows satisfies one side of the disjunction."
+        },
+        {
+          "text": "WHERE value<>5 returns only rid 3.",
+          "correct": true,
+          "why": "NULL<>5 is UNKNOWN, not TRUE."
+        },
+        {
+          "text": "WHERE value=5 OR value<>5 returns only rid 1 and rid 3.",
+          "correct": true,
+          "why": "For NULL both comparisons are UNKNOWN, so their OR is still UNKNOWN and rid 2 is excluded."
+        },
+        {
+          "text": "WHERE value IS NULL returns rid 2.",
+          "correct": true,
+          "why": "IS NULL directly tests missing values."
+        },
+        {
+          "text": "WHERE NOT(value=5) returns rid 2 and rid 3.",
+          "correct": false,
+          "why": "NOT UNKNOWN remains UNKNOWN, so rid 2 is excluded."
+        }
+      ],
+      "explanation": "SQL predicates must be TRUE to survive WHERE. UNKNOWN is not FALSE, and negation does not turn UNKNOWN into TRUE.",
+      "source": "Lecture 02, slides 12–14; SQL three-valued logic."
+    },
+    {
+      "id": "p1q10",
+      "type": "multi",
+      "topic": "Operator precedence",
+      "scenario": "Offer(id,region,price) contains (1,East,150),(2,West,80),(3,West,150),(4,North,50).",
+      "prompt": "Which claims about the following filter are correct?",
+      "code": "WHERE region='East' OR region='West' AND price<100",
+      "options": [
+        {
+          "text": "Offer 1 is selected.",
+          "correct": true,
+          "why": "AND binds before OR, so every East row satisfies the left branch."
+        },
+        {
+          "text": "Offer 2 would be excluded unless parentheses were added around the region comparisons.",
+          "correct": false,
+          "why": "The original predicate already accepts West rows whose price is below 100."
+        },
+        {
+          "text": "Offer 3 is selected.",
+          "correct": false,
+          "why": "It fails the price requirement on the West branch."
+        },
+        {
+          "text": "Adding parentheses around the two region tests would remove offer 1.",
+          "correct": true,
+          "why": "Then the price condition would also apply to East."
+        },
+        {
+          "text": "Offer 4 is selected because its price is below 100.",
+          "correct": false,
+          "why": "It satisfies neither region branch."
+        }
+      ],
+      "explanation": "Evaluate AND before OR. The price restriction belongs to the West branch until parentheses change the expression.",
+      "source": "Lecture 02, slides 11–12; combined predicate application."
+    },
+    {
+      "id": "p1q11",
+      "type": "multi",
+      "topic": "Aggregation",
+      "scenario": "Payment(pid,amount decimal(8,2) NULL) has rows (1,100),(2,NULL),(3,200),(4,100).",
+      "prompt": "Which results follow without grouping?",
+      "code": null,
+      "options": [
+        {
+          "text": "COUNT(amount) = 3.",
+          "correct": true,
+          "why": "The NULL amount is ignored."
+        },
+        {
+          "text": "AVG(amount) = 100.",
+          "correct": false,
+          "why": "The average is 400/3, not 400/4."
+        },
+        {
+          "text": "SUM(amount) = 400.",
+          "correct": true,
+          "why": "The three known amounts sum to 400."
+        },
+        {
+          "text": "COUNT(DISTINCT amount) = 3.",
+          "correct": false,
+          "why": "Only two distinct non-NULL amounts exist: 100 and 200."
+        },
+        {
+          "text": "COUNT(*) = 4.",
+          "correct": true,
+          "why": "All rows are counted."
+        }
+      ],
+      "explanation": "Count rows separately from known values and distinct known values. AVG uses three non-NULL decimal values here.",
+      "source": "Lecture 02, slides 18–19."
+    },
+    {
+      "id": "p1q12",
+      "type": "multi",
+      "topic": "WHERE versus HAVING",
+      "scenario": "Sale(agent,amount) contains (A,40),(A,80),(B,100),(B,20). A manager wants agents whose total sales exceed 110, counting all their sales.",
+      "prompt": "Which query fragments or result claims correctly support that request?",
+      "code": null,
+      "options": [
+        {
+          "text": "SELECT agent,SUM(amount) with the correct grouping.",
+          "correct": true,
+          "why": "The total per agent is the requested measure."
+        },
+        {
+          "text": "HAVING amount>110 without grouping or aggregation of amount.",
+          "correct": false,
+          "why": "The individual amount is not a valid group-level expression here."
+        },
+        {
+          "text": "DISTINCT is required to keep both agents because their aggregate totals are equal.",
+          "correct": false,
+          "why": "The rows have different agent values; GROUP BY already produces one row per agent, regardless of equal totals."
+        },
+        {
+          "text": "GROUP BY agent HAVING SUM(amount)>110.",
+          "correct": true,
+          "why": "Both A and B have totals of 120."
+        },
+        {
+          "text": "WHERE amount>110 GROUP BY agent.",
+          "correct": false,
+          "why": "Filtering individual rows removes every row before totals are formed."
+        }
+      ],
+      "explanation": "WHERE acts on individual sales before grouping; HAVING acts on each agent’s total after grouping. Both totals are 120.",
+      "source": "Lecture 02, slides 20–23."
+    },
+    {
+      "id": "p1q13",
+      "type": "multi",
+      "topic": "Left-join counting",
+      "scenario": "Member has IDs 1,2,3. Loan(lid PK,mid FK) contains (10,1),(11,1),(12,2).",
+      "prompt": "For the query below, which claims are true?",
+      "code": "SELECT m.mid,COUNT(l.lid) n\nFROM Member m LEFT JOIN Loan l ON l.mid=m.mid\nGROUP BY m.mid;",
+      "options": [
+        {
+          "text": "The join produces four rows before grouping.",
+          "correct": true,
+          "why": "Two for member 1, one for member 2, one unmatched row for member 3."
+        },
+        {
+          "text": "After changing to INNER JOIN, COUNT(*) and COUNT(l.lid) agree for every remaining member group.",
+          "correct": true,
+          "why": "Every retained joined row has a non-NULL matching loan primary key."
+        },
+        {
+          "text": "Member 1 has n=2.",
+          "correct": true,
+          "why": "Two child rows match."
+        },
+        {
+          "text": "Member 3 has n=0.",
+          "correct": true,
+          "why": "COUNT(l.lid) ignores the NULL-extended child value."
+        },
+        {
+          "text": "Replacing COUNT(l.lid) with COUNT(*) still gives member 3 zero.",
+          "correct": false,
+          "why": "The preserved row itself is counted by COUNT(*)."
+        }
+      ],
+      "explanation": "Expand the join before counting: member 1 has two rows, member 2 one, and member 3 one NULL-extended row.",
+      "source": "Lecture 03, slide 6; Lecture 02 aggregation."
+    },
+    {
+      "id": "p1q14",
+      "type": "multi",
+      "topic": "Outer-join filters",
+      "scenario": "Member has IDs 1,2,3. Loan(lid,mid,state) contains (10,1,Open),(11,2,Closed). The report must include every member and count only open loans.",
+      "prompt": "Which changes or conclusions are valid?",
+      "code": null,
+      "options": [
+        {
+          "text": "WHERE l.state='Open' OR l.lid IS NULL always fixes the problem.",
+          "correct": false,
+          "why": "Member 2 has a matched Closed loan, so it gets no NULL-extended row and is removed."
+        },
+        {
+          "text": "Put l.state='Open' in the LEFT JOIN ON condition.",
+          "correct": true,
+          "why": "The match is restricted while unmatched parents remain."
+        },
+        {
+          "text": "Put l.state='Open' only in WHERE after the LEFT JOIN.",
+          "correct": false,
+          "why": "This removes members whose joined state is Closed or NULL."
+        },
+        {
+          "text": "With the open-loan predicate in ON, use COUNT(l.lid), grouped by member ID.",
+          "correct": true,
+          "why": "After restricting matches to open loans, COUNT of the child key counts qualifying children and gives zero for missing matches."
+        },
+        {
+          "text": "With the correct ON filter, members 2 and 3 both receive zero.",
+          "correct": true,
+          "why": "Neither has a qualifying open loan."
+        }
+      ],
+      "explanation": "A Closed child is a real match before a WHERE filter. Filtering matches in ON is what creates a preserved zero-open-loan group for that member.",
+      "source": "Lecture 03, slides 5–6; outer-join filter application."
+    },
+    {
+      "id": "p1q15",
+      "type": "multi",
+      "topic": "Join multiplication",
+      "scenario": "One customer has two orders with distinct non-NULL orderIDs and three independent support tickets with distinct ticketIDs. A query joins Customer to Orders and Ticket using customer ID, with no other restrictions.",
+      "prompt": "Which statements follow?",
+      "code": null,
+      "options": [
+        {
+          "text": "The customer contributes six joined rows.",
+          "correct": true,
+          "why": "Each of the two orders pairs with each of three tickets."
+        },
+        {
+          "text": "COUNT(orderID) over that join is two.",
+          "correct": false,
+          "why": "Each order appears three times, producing six counted values."
+        },
+        {
+          "text": "COUNT(DISTINCT orderID) gives two for this customer.",
+          "correct": true,
+          "why": "Distinct removes the repeated order IDs."
+        },
+        {
+          "text": "Pre-aggregating orders and tickets separately can prevent inflated counts.",
+          "correct": true,
+          "why": "One summary row per customer avoids the two-by-three multiplication."
+        },
+        {
+          "text": "SUM(DISTINCT orderAmount) is always a safe repair for inflated revenue.",
+          "correct": false,
+          "why": "Two genuinely different orders may have the same amount and would be wrongly merged."
+        }
+      ],
+      "explanation": "Two independent one-to-many joins produce a two-by-three product. Removing duplicate values is not the same as counting distinct business objects.",
+      "source": "Lecture 03, slides 4–6; Lecture 02 aggregation."
+    },
+    {
+      "id": "p1q16",
+      "type": "multi",
+      "topic": "Inner-join alternatives",
+      "scenario": "Employee(eid,did) and Dept(did,name) are joined on matching department ID. The intended result excludes employees without a matching department.",
+      "prompt": "Which implementations or claims are valid?",
+      "code": null,
+      "options": [
+        {
+          "text": "FROM Employee e, Dept d WHERE e.did=d.did.",
+          "correct": true,
+          "why": "The predicate filters the Cartesian product to matching pairs."
+        },
+        {
+          "text": "FROM Employee e, Dept d with no predicate gives the same result in every database.",
+          "correct": false,
+          "why": "It returns every pair, not only matching pairs."
+        },
+        {
+          "text": "Replacing INNER JOIN with LEFT JOIN, without a later filter, still guarantees unmatched employees are excluded.",
+          "correct": false,
+          "why": "LEFT JOIN preserves unmatched employees, contrary to the intended report."
+        },
+        {
+          "text": "An inner join always produces one row per employee regardless of the right table.",
+          "correct": false,
+          "why": "Multiplicity depends on matching rows and constraints."
+        },
+        {
+          "text": "FROM Employee e JOIN Dept d ON e.did=d.did.",
+          "correct": true,
+          "why": "This is an explicit inner join."
+        }
+      ],
+      "explanation": "Implicit and explicit inner joins express the same matching-pair condition. A left join changes unmatched-row preservation.",
+      "source": "Lecture 03, slides 4–5."
+    },
+    {
+      "id": "p1q17",
+      "type": "multi",
+      "topic": "Right join",
+      "scenario": "Book has IDs 10,20. Loan(lid,bid) contains only (1,10). A report uses Loan RIGHT JOIN Book ON Loan.bid=Book.bid.",
+      "prompt": "Which statements are correct?",
+      "code": null,
+      "options": [
+        {
+          "text": "Swapping table order to Book LEFT JOIN Loan with the same ON condition preserves the same book/loan pairings.",
+          "correct": true,
+          "why": "Both formulations preserve Book; compare the same explicitly selected columns rather than SELECT * column order."
+        },
+        {
+          "text": "Book 10 appears with loan ID 1.",
+          "correct": true,
+          "why": "The matching pair is retained."
+        },
+        {
+          "text": "For the unmatched book 20, Book.bid remains 20 while Loan.bid is NULL in the result.",
+          "correct": true,
+          "why": "Only the missing Loan-side columns are NULL-extended; the preserved Book row retains its own values."
+        },
+        {
+          "text": "Book 20 appears with a NULL loan ID.",
+          "correct": true,
+          "why": "The right table is preserved."
+        },
+        {
+          "text": "Book 20 is removed because it has no loan.",
+          "correct": false,
+          "why": "That would be inner-join behaviour."
+        }
+      ],
+      "explanation": "The preserved Book side keeps its values, while missing Loan-side values become NULL. This changes query results, not stored records.",
+      "source": "Lecture 03, slides 6–7."
+    },
+    {
+      "id": "p1q18",
+      "type": "multi",
+      "topic": "IN and NOT IN",
+      "scenario": "Employee IDs are 1,2,3. Assignment.ownerID contains 1 and NULL.",
+      "prompt": "Which conclusions follow under SQL NULL rules?",
+      "code": null,
+      "options": [
+        {
+          "text": "Filtering NULL out of the NOT IN subquery makes employees 2 and 3 pass.",
+          "correct": true,
+          "why": "The remaining set contains only 1."
+        },
+        {
+          "text": "NULL in the subquery matches every employee ID.",
+          "correct": false,
+          "why": "NULL comparisons are unknown, not universal matches."
+        },
+        {
+          "text": "eid IN (SELECT ownerID FROM Assignment) returns employee 1.",
+          "correct": true,
+          "why": "The comparison finds a true match for 1."
+        },
+        {
+          "text": "eid NOT IN (SELECT ownerID FROM Assignment) returns employees 2 and 3.",
+          "correct": false,
+          "why": "The NULL causes UNKNOWN for those nonmatching IDs."
+        },
+        {
+          "text": "A correlated NOT EXISTS test can find employees 2 and 3.",
+          "correct": true,
+          "why": "Neither has an equal ownerID row; NULL does not match their IDs."
+        }
+      ],
+      "explanation": "A NULL inside NOT IN can make every nonmatching comparison UNKNOWN. A properly correlated NOT EXISTS asks whether an equal row exists.",
+      "source": "Lecture 02, slide 12; Lab 08 nested queries; SQL NULL semantics."
+    },
+    {
+      "id": "p1q19",
+      "type": "multi",
+      "topic": "Scalar subqueries",
+      "scenario": "Book prices are 100,200,200. A student writes price=(SELECT price FROM Book) in a WHERE clause.",
+      "prompt": "Which observations are correct?",
+      "code": null,
+      "options": [
+        {
+          "text": "A zero-row scalar subquery normally behaves as the number zero.",
+          "correct": false,
+          "why": "It yields NULL, not numeric zero."
+        },
+        {
+          "text": "The scalar subquery fails because it returns more than one row.",
+          "correct": true,
+          "why": "A scalar expression cannot accept these three rows."
+        },
+        {
+          "text": "The repeated 200 automatically collapses the result to one row.",
+          "correct": false,
+          "why": "SQL does not remove duplicate rows implicitly, and even DISTINCT gives 100 and 200."
+        },
+        {
+          "text": "Replacing the subquery with SELECT MAX(price) returns the two highest-priced books.",
+          "correct": true,
+          "why": "MAX returns the single scalar 200."
+        },
+        {
+          "text": "Using price IN (SELECT price FROM Book) accepts all three books here.",
+          "correct": true,
+          "why": "Each price belongs to that set."
+        }
+      ],
+      "explanation": "A scalar subquery permits at most one row. An aggregate can produce one scalar; IN deliberately accepts a multiple-row result.",
+      "source": "Lecture 02, slide 12; Lab 08 single-row subqueries."
+    },
+    {
+      "id": "p1q20",
+      "type": "multi",
+      "topic": "ANY and ALL",
+      "scenario": "A comparison subquery returns the non-NULL values 40 and 70. A product price is 60.",
+      "prompt": "Which claims are true?",
+      "code": null,
+      "options": [
+        {
+          "text": "60 > ANY(subquery) is true.",
+          "correct": true,
+          "why": "60 exceeds at least one value: 40."
+        },
+        {
+          "text": "Replacing ANY with SOME leaves these comparisons unchanged.",
+          "correct": true,
+          "why": "SOME and ANY are SQL synonyms."
+        },
+        {
+          "text": "60 < ANY(subquery) is true.",
+          "correct": true,
+          "why": "60 is below 70."
+        },
+        {
+          "text": "For an empty subquery, >ALL is true.",
+          "correct": true,
+          "why": "Universal comparison over an empty set is true."
+        },
+        {
+          "text": "For an empty subquery, >ANY is true.",
+          "correct": false,
+          "why": "There is no witness satisfying the comparison."
+        }
+      ],
+      "explanation": "ANY/SOME needs a true witness; ALL needs no counterexample. This explains both the 40/70 comparisons and the empty-set results.",
+      "source": "Lecture 02, slide 12; Lab 08 ANY/ALL."
+    },
+    {
+      "id": "p1q21",
+      "type": "multi",
+      "topic": "Sorting and duplicate removal",
+      "scenario": "Book contains (1,SQL,100),(2,SQL,100),(3,ER,120), with columns bid,title,price.",
+      "prompt": "Which claims are correct?",
+      "code": null,
+      "options": [
+        {
+          "text": "SELECT DISTINCT bid,title,price returns two rows.",
+          "correct": false,
+          "why": "The different primary keys keep all three projected tuples distinct."
+        },
+        {
+          "text": "ORDER BY price DESC,bid ASC places bid 3 first.",
+          "correct": true,
+          "why": "120 is the highest price."
+        },
+        {
+          "text": "TOP(1) without ORDER BY guarantees bid 3.",
+          "correct": false,
+          "why": "No deterministic ordering is specified."
+        },
+        {
+          "text": "Adding bid to the ORDER BY makes the tied 100-price rows ordered deterministically.",
+          "correct": true,
+          "why": "The unique bid breaks the tie."
+        },
+        {
+          "text": "SELECT DISTINCT title,price returns two rows.",
+          "correct": true,
+          "why": "The first two rows become one identical projected pair."
+        }
+      ],
+      "explanation": "DISTINCT applies to the whole projected tuple. Stable TOP selection needs ordering, and tied prices need a unique tie-breaker.",
+      "source": "Lecture 02, slides 15, 17; SQL Server TOP application."
+    },
+    {
+      "id": "p1q22",
+      "type": "multi",
+      "topic": "Pattern and interval filters",
+      "scenario": "Code values are AB12, AB123, XB12 and AB1. Numeric scores are checked independently with BETWEEN 50 AND 80.",
+      "prompt": "Which statements are correct?",
+      "code": null,
+      "options": [
+        {
+          "text": "LIKE 'AB%' excludes AB1.",
+          "correct": false,
+          "why": "Percent may match any suffix length, including one character."
+        },
+        {
+          "text": "BETWEEN 50 AND 80 includes both boundary scores.",
+          "correct": true,
+          "why": "BETWEEN is inclusive."
+        },
+        {
+          "text": "BETWEEN 50 AND 80 includes a NULL score.",
+          "correct": false,
+          "why": "The comparisons are UNKNOWN for NULL."
+        },
+        {
+          "text": "LIKE 'AB__' matches AB12 but not AB123.",
+          "correct": true,
+          "why": "Two underscores require exactly two following characters."
+        },
+        {
+          "text": "LIKE '%B12' matches AB12 and XB12.",
+          "correct": true,
+          "why": "The percent accepts either prefix."
+        }
+      ],
+      "explanation": "Match the whole code against the pattern. Percent matches any-length suffix, underscore one character, and BETWEEN includes both numeric endpoints.",
+      "source": "Lecture 02, slides 13, 16."
+    },
+    {
+      "id": "p1q23",
+      "type": "multi",
+      "topic": "Changing records",
+      "scenario": "A shop has three Product rows. The developer runs UPDATE Product SET price=price*1.1 with no WHERE, then DELETE FROM Product WHERE pid=999, where no such ID exists.",
+      "prompt": "Which conclusions follow?",
+      "code": null,
+      "options": [
+        {
+          "text": "DROP TABLE Product would remove rows but retain the empty table definition for later INSERT statements.",
+          "correct": false,
+          "why": "DROP removes the table object; DELETE removes rows while retaining the table."
+        },
+        {
+          "text": "The UPDATE automatically creates an audit history table.",
+          "correct": false,
+          "why": "No such trigger or auditing setup was specified."
+        },
+        {
+          "text": "The UPDATE targets every product row.",
+          "correct": true,
+          "why": "No WHERE limits its target set."
+        },
+        {
+          "text": "The DELETE removes all three rows because 999 is absent.",
+          "correct": false,
+          "why": "A nonmatching predicate deletes zero rows."
+        },
+        {
+          "text": "The table definition remains after the DELETE.",
+          "correct": true,
+          "why": "DELETE removes qualifying rows, not the table object."
+        }
+      ],
+      "explanation": "Separate row-changing statements from object-changing statements. An absent match deletes nothing; missing WHERE targets all rows.",
+      "source": "Lecture 02, slides 6, 8–10."
+    },
+    {
+      "id": "p1q24",
+      "type": "multi",
+      "topic": "Empty input aggregates",
+      "scenario": "A report filters all Payment rows out before aggregating and does not use GROUP BY.",
+      "prompt": "Which result claims are correct?",
+      "code": null,
+      "options": [
+        {
+          "text": "The ungrouped aggregate query necessarily returns no result row.",
+          "correct": false,
+          "why": "It returns one aggregate row even with no input rows."
+        },
+        {
+          "text": "COUNT(*) returns zero.",
+          "correct": true,
+          "why": "No input rows are counted."
+        },
+        {
+          "text": "SUM(amount) returns NULL.",
+          "correct": true,
+          "why": "SUM has no non-NULL input values."
+        },
+        {
+          "text": "COALESCE(SUM(amount),0) returns zero.",
+          "correct": true,
+          "why": "COALESCE substitutes the requested default."
+        },
+        {
+          "text": "MIN(amount) returns NULL.",
+          "correct": true,
+          "why": "There is no input value from which to compute a minimum."
+        }
+      ],
+      "explanation": "An ungrouped aggregate returns one summary row even with empty input. COUNT has result zero; SUM/MIN/AVG have NULL unless replaced.",
+      "source": "Lecture 02, slides 18–19; empty-input aggregate application."
+    },
+    {
+      "id": "p1q25",
+      "type": "multi",
+      "topic": "Combined report diagnosis",
+      "scenario": "Customer IDs are 1,2. Order(oid,cid,total) contains (10,1,50),(11,1,50). The goal is every customer with total order value, using zero where no order exists.",
+      "prompt": "Which proposed repairs are correct?",
+      "code": null,
+      "options": [
+        {
+          "text": "Use LEFT JOIN, GROUP BY customer ID, and COALESCE(SUM(o.total),0).",
+          "correct": true,
+          "why": "That preserves customer 2 and replaces its NULL sum with zero."
+        },
+        {
+          "text": "Use SUM(DISTINCT o.total) to ensure customer 1 receives 100.",
+          "correct": false,
+          "why": "DISTINCT collapses the two equal amounts and gives 50."
+        },
+        {
+          "text": "Expect customer 1 to receive 100.",
+          "correct": true,
+          "why": "Two different orders each contribute 50."
+        },
+        {
+          "text": "Expect customer 2 to receive 0 after COALESCE.",
+          "correct": true,
+          "why": "Its preserved group has no non-NULL order value."
+        },
+        {
+          "text": "Put o.total>0 in WHERE and still guarantee every customer appears.",
+          "correct": false,
+          "why": "The NULL-extended row for customer 2 fails that predicate."
+        }
+      ],
+      "explanation": "Preserve customers first, aggregate each customer’s real orders, then substitute zero for the missing total. Equal order values are still separate revenue.",
+      "source": "Lecture 03, slide 6; Lecture 02, slides 18–23."
+    }
+  ]
+}

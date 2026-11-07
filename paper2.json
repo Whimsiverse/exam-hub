@@ -1,0 +1,926 @@
+{
+  "id": 2,
+  "title": "EER design & relational mapping",
+  "lectures": "04–05",
+  "questions": [
+    {
+      "id": "p2q1",
+      "type": "multi",
+      "topic": "Weak task identity",
+      "scenario": "Use research scenario U. Apply the rules shown in the diagram; do not add unstated uniqueness rules. Projects P1 and P2 both contain a task numbered 7.",
+      "prompt": "Which mapping decisions preserve the task rules?",
+      "options": [
+        {
+          "text": "Make Task.pid UNIQUE to enforce the identifying relationship.",
+          "correct": false,
+          "why": "That would permit at most one task per project, contradicting the many side."
+        },
+        {
+          "text": "Store a separate Project foreign key for each digit of taskNo.",
+          "correct": false,
+          "why": "Foreign keys reference entity keys, not the internal characters of a partial key."
+        },
+        {
+          "text": "Use (pid, taskNo) as the Task primary key.",
+          "correct": true,
+          "why": "The partial key taskNo becomes unique when combined with its owner project key."
+        },
+        {
+          "text": "Include a Task.pid foreign key referencing Project.pid.",
+          "correct": true,
+          "why": "Every task must refer to an existing owner project."
+        },
+        {
+          "text": "Use taskNo alone as the Task primary key.",
+          "correct": false,
+          "why": "Task numbers can repeat in different projects."
+        }
+      ],
+      "explanation": "An identifying relationship contributes the owner key to both the weak entity primary key and its foreign-key reference.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-research.svg"
+    },
+    {
+      "id": "p2q2",
+      "type": "multi",
+      "topic": "Multivalued phones",
+      "scenario": "Use research scenario U. Apply the rules shown in the diagram; do not add unstated uniqueness rules. Two departments share a switchboard number; another department has no phone recorded.",
+      "prompt": "Which statements follow from a conventional mapping of Department.phone?",
+      "options": [
+        {
+          "text": "DepartmentPhone.did references Department.did.",
+          "correct": true,
+          "why": "Each phone entry belongs to a real department."
+        },
+        {
+          "text": "The absence of DepartmentPhone rows automatically violates the diagram.",
+          "correct": false,
+          "why": "No minimum number of phone values is specified."
+        },
+        {
+          "text": "The multivalued attribute requires one new foreign key for every stored phone number.",
+          "correct": false,
+          "why": "One foreign-key constraint applies to all rows; data rows do not create new constraints."
+        },
+        {
+          "text": "DepartmentPhone(did, phone) can use the pair as its primary key.",
+          "correct": true,
+          "why": "The pair prevents the same phone value appearing twice for one department."
+        },
+        {
+          "text": "The phone column must be globally UNIQUE.",
+          "correct": false,
+          "why": "The scenario permits two departments to share a number."
+        }
+      ],
+      "explanation": "A multivalued attribute becomes a separate relation; constraints are counted per schema declaration, not per stored value.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-research.svg"
+    },
+    {
+      "id": "p2q3",
+      "type": "multi",
+      "topic": "Ownership participation",
+      "scenario": "Use research scenario U. Apply the rules shown in the diagram; do not add unstated uniqueness rules. A designer adds did to Project to represent Owns.",
+      "prompt": "Which choices are justified?",
+      "options": [
+        {
+          "text": "Project.did should be NOT NULL.",
+          "correct": true,
+          "why": "Every project has exactly one owning department."
+        },
+        {
+          "text": "A foreign key from Department to one Project is sufficient to represent all owned projects.",
+          "correct": false,
+          "why": "One scalar project reference cannot represent an arbitrary collection of projects."
+        },
+        {
+          "text": "A department with no projects can satisfy the diagram.",
+          "correct": true,
+          "why": "Department participation in Owns has minimum zero."
+        },
+        {
+          "text": "Project.did should reference Department.did.",
+          "correct": true,
+          "why": "Project is the many side and holds the owner reference."
+        },
+        {
+          "text": "Project.did must be UNIQUE.",
+          "correct": false,
+          "why": "A department may own several projects."
+        }
+      ],
+      "explanation": "The maximum cardinality places the FK on Project; the minimum participation makes that FK mandatory.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-research.svg"
+    },
+    {
+      "id": "p2q4",
+      "type": "multi",
+      "topic": "Overlapping partial ISA",
+      "scenario": "Use research scenario U. Apply the rules shown in the diagram; do not add unstated uniqueness rules. Person 20 has no role row, Person 21 has a Staff row, and Person 22 has both Staff and Student rows.",
+      "prompt": "Which observations are valid?",
+      "options": [
+        {
+          "text": "Person 21 need not have a Student row.",
+          "correct": true,
+          "why": "Overlap permits several roles but does not require them."
+        },
+        {
+          "text": "Each Staff row must correspond to a Person row in a parent-plus-subtype mapping.",
+          "correct": true,
+          "why": "The inherited subtype primary key is also a foreign key to Person."
+        },
+        {
+          "text": "Person 20 is allowed by partial specialisation.",
+          "correct": true,
+          "why": "Partial specialisation allows a superclass instance in no subtype."
+        },
+        {
+          "text": "Person 22 violates disjointness.",
+          "correct": false,
+          "why": "This specialisation is overlapping, not disjoint."
+        },
+        {
+          "text": "Person 22 inherits the same Person identity in both roles.",
+          "correct": true,
+          "why": "Subtype identities are inherited from the superclass."
+        }
+      ],
+      "explanation": "Overlap answers whether roles can coexist; partiality answers whether a role is required. These are independent decisions.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-research.svg"
+    },
+    {
+      "id": "p2q5",
+      "type": "multi",
+      "topic": "Choosing ISA alternatives",
+      "scenario": "Use research scenario U. Apply the rules shown in the diagram; do not add unstated uniqueness rules. The team wants to replace Person, Staff and Student with a different ISA mapping.",
+      "prompt": "Which assessments are correct?",
+      "options": [
+        {
+          "text": "Keeping only Staff and Student always preserves every Person.",
+          "correct": false,
+          "why": "A person in neither role would have no table in which to be represented."
+        },
+        {
+          "text": "Keeping Person plus both subtype tables can represent all permitted cases.",
+          "correct": true,
+          "why": "This general mapping supports both partiality and overlap."
+        },
+        {
+          "text": "The two role flags must always sum to exactly one.",
+          "correct": false,
+          "why": "The scenario allows both zero roles and two roles."
+        },
+        {
+          "text": "One ordinary discriminator with mutually exclusive Staff/Student values cannot express dual membership.",
+          "correct": true,
+          "why": "A single exclusive value does not represent overlapping roles."
+        },
+        {
+          "text": "One Person table with separate isStaff and isStudent flags can represent the ISA.",
+          "correct": true,
+          "why": "Two flags can represent neither, either or both roles."
+        }
+      ],
+      "explanation": "Select an ISA mapping by both covering and disjointness constraints, not merely by the number of subtypes.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-research.svg"
+    },
+    {
+      "id": "p2q6",
+      "type": "multi",
+      "topic": "Recursive mentorship",
+      "scenario": "Use research scenario U. Apply the rules shown in the diagram; do not add unstated uniqueness rules. Mentorship is implemented using Person.mentorID.",
+      "prompt": "Which statements are correct?",
+      "options": [
+        {
+          "text": "The self-referencing FK alone rejects every cycle involving two or more people.",
+          "correct": false,
+          "why": "Every reference in a cycle may point to an existing person, so the FK can still hold."
+        },
+        {
+          "text": "mentorID should reference Person.personID.",
+          "correct": true,
+          "why": "Both roles of the recursive relationship use the same entity type."
+        },
+        {
+          "text": "A CHECK comparing mentorID with personID can reject self-mentoring.",
+          "correct": true,
+          "why": "A direct inequality check rejects a person being their own mentor."
+        },
+        {
+          "text": "mentorID must be nullable to represent an unmentored person.",
+          "correct": true,
+          "why": "The mentee minimum is zero."
+        },
+        {
+          "text": "UNIQUE(mentorID) is needed to allow one mentor to guide many people.",
+          "correct": false,
+          "why": "UNIQUE would instead prevent repeated use of the same mentor."
+        }
+      ],
+      "explanation": "A self-FK checks existence. Maximum cardinality, optionality, self-links and longer cycles are separate constraints.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-research.svg"
+    },
+    {
+      "id": "p2q7",
+      "type": "multi",
+      "topic": "Aggregation and foreign keys",
+      "scenario": "Use research scenario U. Apply the rules shown in the diagram; do not add unstated uniqueness rules. Review stores staffID, personID, pid and verdict. Participation uses primary key (personID,pid).",
+      "prompt": "Which choices correctly preserve what is reviewed?",
+      "options": [
+        {
+          "text": "Separate FKs to Person and Project are equivalent to the composite reference to Participation.",
+          "correct": false,
+          "why": "They verify individual entities but not the existence of their participation pair."
+        },
+        {
+          "text": "Use a separate FK from Review.staffID to Staff.personID.",
+          "correct": true,
+          "why": "The reviewer must be a staff member."
+        },
+        {
+          "text": "The two intended FK constraints use three referencing columns in total.",
+          "correct": true,
+          "why": "staffID contributes one; the participation FK contributes two."
+        },
+        {
+          "text": "Use a composite FK (personID,pid) from Review to Participation.",
+          "correct": true,
+          "why": "This verifies that the exact person–project participation exists."
+        },
+        {
+          "text": "These references consist of three FK constraints because they use three columns.",
+          "correct": false,
+          "why": "They are two constraints: one single-column and one composite."
+        }
+      ],
+      "explanation": "Aggregation preserves the identity of an association. The number of FK constraints is not the number of FK columns.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-research.svg"
+    },
+    {
+      "id": "p2q8",
+      "type": "multi",
+      "topic": "Relationship attributes",
+      "scenario": "Use research scenario U. Apply the rules shown in the diagram; do not add unstated uniqueness rules. Person 8 participates in Project A for 12 hours and Project B for 30 hours. Staff member 4 reviews both participations with different verdicts.",
+      "prompt": "Which placements preserve these facts?",
+      "options": [
+        {
+          "text": "Store verdict in Review.",
+          "correct": true,
+          "why": "Verdict describes a particular staff review of a particular participation."
+        },
+        {
+          "text": "Store one hours value in Person.",
+          "correct": false,
+          "why": "One value cannot distinguish Person 8’s two projects."
+        },
+        {
+          "text": "Store one verdict in Staff.",
+          "correct": false,
+          "why": "A reviewer can give different verdicts to different participations."
+        },
+        {
+          "text": "Store hours in Participation.",
+          "correct": true,
+          "why": "Hours describe a particular person–project association."
+        },
+        {
+          "text": "Store a single hours value in Project and reuse it for every participant.",
+          "correct": false,
+          "why": "Different people may contribute different hours to the same project."
+        }
+      ],
+      "explanation": "An attribute belongs where its determining identity resides; relationship-specific values cannot generally be moved to one participant.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-research.svg"
+    },
+    {
+      "id": "p2q9",
+      "type": "multi",
+      "topic": "Changing review requirements",
+      "scenario": "Use research scenario U. Apply the rules shown in the diagram; do not add unstated uniqueness rules. A new rule permits the same staff member to review the same participation several times, retaining every review.",
+      "prompt": "Which redesigns are justified?",
+      "options": [
+        {
+          "text": "The composite Participation FK should be removed because reviews repeat.",
+          "correct": false,
+          "why": "Repeated events still refer to a valid participation."
+        },
+        {
+          "text": "A globally unique reviewID can be the new primary key.",
+          "correct": true,
+          "why": "A new event identifier distinguishes repeated occurrences."
+        },
+        {
+          "text": "The old key (staffID,personID,pid) can no longer distinguish every review event.",
+          "correct": true,
+          "why": "Repeated reviews can now share all three old key values."
+        },
+        {
+          "text": "Adding reviewDate always creates a candidate key, even if simultaneous reviews are allowed.",
+          "correct": false,
+          "why": "A timestamp is a key only when uniqueness is guaranteed by the requirements."
+        },
+        {
+          "text": "A review sequence unique within each staff–participation combination can extend the old key.",
+          "correct": true,
+          "why": "Adding the local sequence makes each repeated event distinct."
+        }
+      ],
+      "explanation": "A relationship tuple and a repeatable event are different identities. Change the key while retaining the participant references.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-research.svg"
+    },
+    {
+      "id": "p2q10",
+      "type": "multi",
+      "topic": "Whole research mapping audit",
+      "scenario": "Use research scenario U. Apply the rules shown in the diagram; do not add unstated uniqueness rules. Use one table per strong/weak entity, a separate phone table, Person plus its two subtype tables, a Participation table, a Review table, and a nullable mentorID in Person. Do not introduce surrogate keys or extra relationship tables.",
+      "prompt": "Which audit results are correct?",
+      "options": [
+        {
+          "text": "The mapping has eleven referencing FK columns.",
+          "correct": true,
+          "why": "The ten constraints include one two-column composite FK in Review."
+        },
+        {
+          "text": "The mapping needs a separate table for binary 1:N Owns under the stated conventional mapping.",
+          "correct": false,
+          "why": "Owns is represented by Project.did."
+        },
+        {
+          "text": "The mapping has nine tables.",
+          "correct": true,
+          "why": "Department, DepartmentPhone, Project, Task, Person, Staff, Student, Participation and Review give nine."
+        },
+        {
+          "text": "The mapping has ten FK constraints.",
+          "correct": true,
+          "why": "Counts are 1+1+1+1+1+1+2+2 across phone, project, task, mentor, Staff, Student, Participation and Review."
+        },
+        {
+          "text": "Review contributes three FK constraints to the total.",
+          "correct": false,
+          "why": "Review contributes a reviewer FK and one composite participation FK."
+        }
+      ],
+      "explanation": "Count tables first, then each declared reference. The recursive mentor reference is easy to miss.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-research.svg"
+    },
+    {
+      "id": "p2q11",
+      "type": "multi",
+      "topic": "Weak ward identity",
+      "scenario": "Use clinical scenario H. Apply the rules shown in the diagram; do not add unstated constraints. Hospital H1 and Hospital H2 each have Ward 3.",
+      "prompt": "Which statements preserve this situation?",
+      "options": [
+        {
+          "text": "Ward has a composite key, so it needs two independent FKs to Hospital.",
+          "correct": false,
+          "why": "The owner reference is a single FK on hid; wardNo is the partial key, not another Hospital reference."
+        },
+        {
+          "text": "Ward.hid may be NULL for a temporary ward.",
+          "correct": false,
+          "why": "Every weak Ward belongs to exactly one Hospital; no temporary-owner exception is stated."
+        },
+        {
+          "text": "wardNo must be globally unique.",
+          "correct": false,
+          "why": "The two wards in the scenario legitimately share wardNo=3."
+        },
+        {
+          "text": "An Admission reference to a Ward must identify both its hospital and its ward number in this mapping.",
+          "correct": true,
+          "why": "The full referenced Ward key contains both columns."
+        },
+        {
+          "text": "Ward can use primary key (hid,wardNo).",
+          "correct": true,
+          "why": "Ward numbers are local to their owning hospital."
+        }
+      ],
+      "explanation": "Weak identity combines owner identity with the partial key. Composite primary keys do not imply multiple foreign keys.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-clinical.svg"
+    },
+    {
+      "id": "p2q12",
+      "type": "multi",
+      "topic": "Total disjoint clinician ISA",
+      "scenario": "Use clinical scenario H. Apply the rules shown in the diagram; do not add unstated constraints. The hospital imports clinician C9 and considers possible role records.",
+      "prompt": "Which final states satisfy the stated ISA rules?",
+      "options": [
+        {
+          "text": "C9 has a Doctor row and no Nurse row.",
+          "correct": true,
+          "why": "Exactly one role satisfies totality and disjointness."
+        },
+        {
+          "text": "C9 has neither role after the import is complete.",
+          "correct": false,
+          "why": "Total specialisation requires at least one role."
+        },
+        {
+          "text": "C9 has a Nurse row and no Doctor row.",
+          "correct": true,
+          "why": "Exactly one role satisfies both constraints."
+        },
+        {
+          "text": "C9 has both Doctor and Nurse rows.",
+          "correct": false,
+          "why": "Disjointness forbids simultaneous membership."
+        },
+        {
+          "text": "Another clinician can use a different role from C9.",
+          "correct": true,
+          "why": "The ISA rule applies to each individual, not to the entire population as one choice."
+        }
+      ],
+      "explanation": "Total plus disjoint means exactly one subtype for each superclass instance.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-clinical.svg"
+    },
+    {
+      "id": "p2q13",
+      "type": "multi",
+      "topic": "Clinical ISA mapping alternatives",
+      "scenario": "Use clinical scenario H. Apply the rules shown in the diagram; do not add unstated constraints. The team compares three standard representations for clinicians.",
+      "prompt": "Which assessments are correct?",
+      "options": [
+        {
+          "text": "Subtype-only tables automatically provide one universal target table for every FK to Clinician.",
+          "correct": false,
+          "why": "There is no retained Clinician table in that representation; generic references need additional design."
+        },
+        {
+          "text": "Subtype-only tables are possible because every clinician has a role.",
+          "correct": true,
+          "why": "Totality prevents superclass-only instances from being lost."
+        },
+        {
+          "text": "Parent-plus-subtype tables can represent this ISA.",
+          "correct": true,
+          "why": "This general approach supports the stated total/disjoint case."
+        },
+        {
+          "text": "One Clinician table with a compulsory Doctor/Nurse discriminator can represent this ISA.",
+          "correct": true,
+          "why": "Disjointness permits one discriminator, and totality requires a real subtype value."
+        },
+        {
+          "text": "A single-table mapping must make both specialty and grade NOT NULL for every row.",
+          "correct": false,
+          "why": "Each field belongs to only one subtype; irrelevant subtype fields may be NULL."
+        }
+      ],
+      "explanation": "A mapping can represent the ISA while making other references harder. Validity and convenience are different questions.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-clinical.svg"
+    },
+    {
+      "id": "p2q14",
+      "type": "multi",
+      "topic": "Two roles of Doctor identifiers",
+      "scenario": "Use clinical scenario H. Apply the rules shown in the diagram; do not add unstated constraints. Use Clinician plus Doctor and Nurse tables. Doctor stores cid and supervisorID.",
+      "prompt": "Which statements are correct?",
+      "options": [
+        {
+          "text": "Doctor.cid is both its primary key and an FK to Clinician.cid.",
+          "correct": true,
+          "why": "The subtype inherits its identity from the superclass."
+        },
+        {
+          "text": "supervisorID must be UNIQUE because every doctor has at most one supervisor.",
+          "correct": false,
+          "why": "A scalar supervisorID already gives each doctor at most one supervisor; UNIQUE would restrict the supervisor to one supervisee."
+        },
+        {
+          "text": "supervisorID should reference Nurse.cid because Doctor and Nurse share the same superclass.",
+          "correct": false,
+          "why": "Shared ancestry does not change the role explicitly required for supervision."
+        },
+        {
+          "text": "Doctor.supervisorID is a separate FK to Doctor.cid.",
+          "correct": true,
+          "why": "The supervising person must have the Doctor role."
+        },
+        {
+          "text": "The two references count as two FK constraints.",
+          "correct": true,
+          "why": "The inherited identity reference and recursive supervision reference enforce different links."
+        }
+      ],
+      "explanation": "An inherited subtype key and a recursive relationship can use similar identifiers while representing distinct constraints.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-clinical.svg"
+    },
+    {
+      "id": "p2q15",
+      "type": "multi",
+      "topic": "Nested weak identity",
+      "scenario": "Use clinical scenario H. Apply the rules shown in the diagram; do not add unstated constraints. An Observation is identified locally inside one patient’s enrolment in one trial. Use Enrolment primary key (patientID,trialID), with no surrogate enrolment key.",
+      "prompt": "Which conclusions follow?",
+      "options": [
+        {
+          "text": "Observation needs one composite FK to Enrolment.",
+          "correct": true,
+          "why": "A single reference verifies the complete owner enrolment."
+        },
+        {
+          "text": "Observation can use primary key (patientID,trialID,obsNo).",
+          "correct": true,
+          "why": "The owner key combines with the local observation number."
+        },
+        {
+          "text": "That owner FK uses two referencing columns.",
+          "correct": true,
+          "why": "patientID and trialID jointly identify the owner."
+        },
+        {
+          "text": "Different enrolments may reuse obsNo=1.",
+          "correct": true,
+          "why": "The observation number is only unique inside its owner enrolment."
+        },
+        {
+          "text": "Separate FKs to Patient and Trial alone guarantee a valid owner enrolment.",
+          "correct": false,
+          "why": "A patient and trial may exist without that patient being enrolled in that trial."
+        }
+      ],
+      "explanation": "Follow ownership all the way to the complete owner identity; do not count composite components as separate constraints.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-clinical.svg"
+    },
+    {
+      "id": "p2q16",
+      "type": "multi",
+      "topic": "Repeat admissions",
+      "scenario": "Use clinical scenario H. Apply the rules shown in the diagram; do not add unstated constraints. Patient P7 enters Ward 2 of Hospital H1 twice on different occasions. Both visits must be retained.",
+      "prompt": "Which mapping statements are correct?",
+      "options": [
+        {
+          "text": "Admission needs separate references to Patient, Ward and Doctor.",
+          "correct": true,
+          "why": "Each event is linked to exactly one instance of all three participant types."
+        },
+        {
+          "text": "The pair (patientID,wardNo) is necessarily a candidate key.",
+          "correct": false,
+          "why": "It repeats for repeated admissions and also omits the hospital part of Ward identity."
+        },
+        {
+          "text": "An Admission may omit its attending Doctor because Doctor participation has minimum zero.",
+          "correct": false,
+          "why": "A Doctor may attend no admissions, but each Admission requires exactly one Doctor."
+        },
+        {
+          "text": "admissionID can distinguish the two admission events.",
+          "correct": true,
+          "why": "The independent event key is expressly supplied."
+        },
+        {
+          "text": "These three FK constraints use four referencing columns in the specified mapping.",
+          "correct": true,
+          "why": "Patient and Doctor use one column each; Ward uses hid and wardNo."
+        }
+      ],
+      "explanation": "Read participation from both ends: an optional Doctor-to-Admission collection does not make the event’s Doctor optional.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-clinical.svg"
+    },
+    {
+      "id": "p2q17",
+      "type": "multi",
+      "topic": "Avoiding invented constraints",
+      "scenario": "Use clinical scenario H. Apply the rules shown in the diagram; do not add unstated constraints. Doctor D1 belongs to Hospital H1. An Admission links D1 with a Ward in Hospital H2. All referenced rows exist.",
+      "prompt": "Which assessments are justified by the given rules?",
+      "options": [
+        {
+          "text": "The diagram does not itself require the doctor’s hospital to match the ward’s hospital.",
+          "correct": true,
+          "why": "No cross-hospital equality rule is stated."
+        },
+        {
+          "text": "The original diagram must be changed to make Hospital a weak entity.",
+          "correct": false,
+          "why": "The proposed policy concerns relationship consistency, not Hospital identity."
+        },
+        {
+          "text": "The Ward composite FK by itself checks the doctor’s Hospital assignment.",
+          "correct": false,
+          "why": "The Ward FK has no knowledge of the Doctor-to-Hospital relationship."
+        },
+        {
+          "text": "If the organisation later bans cross-hospital attendance, the design needs an additional constraint strategy.",
+          "correct": true,
+          "why": "A new business rule needs enforcement beyond the listed identity references."
+        },
+        {
+          "text": "The row necessarily violates the Admission-to-Doctor FK.",
+          "correct": false,
+          "why": "That FK checks the Doctor identity, which exists."
+        }
+      ],
+      "explanation": "A plausible real-world policy is not automatically a requirement. Test only the stated rules.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-clinical.svg"
+    },
+    {
+      "id": "p2q18",
+      "type": "multi",
+      "topic": "Whole clinical mapping audit",
+      "scenario": "Use clinical scenario H. Apply the rules shown in the diagram; do not add unstated constraints. Use parent-plus-subtype ISA mapping; separate phone, Enrolment and Admission tables; conventional weak mappings; and a nullable supervisorID in Doctor. Lead-doctor and hospital-assignment 1:N relationships become FKs.",
+      "prompt": "Which totals and qualifications are correct?",
+      "options": [
+        {
+          "text": "The FK constraints use fifteen referencing columns.",
+          "correct": true,
+          "why": "The Observation and Admission-to-Ward FKs each add one column beyond the constraint count."
+        },
+        {
+          "text": "The mapping contains eleven tables.",
+          "correct": true,
+          "why": "Hospital, HospitalPhone, Ward, Clinician, Doctor, Nurse, Patient, Trial, Enrolment, Observation and Admission give eleven."
+        },
+        {
+          "text": "Additional enforcement may be needed to ensure every Hospital has at least one Ward.",
+          "correct": true,
+          "why": "A child-to-parent FK verifies existing children’s parents, not a parent’s minimum child count."
+        },
+        {
+          "text": "PKs and FKs alone enforce the total and disjoint clinician ISA.",
+          "correct": false,
+          "why": "Those constraints do not guarantee exactly one subtype row per Clinician."
+        },
+        {
+          "text": "The mapping contains thirteen FK constraints.",
+          "correct": true,
+          "why": "Phone1, Ward1, Clinician1, Doctor2, Nurse1, Trial1, Enrolment2, Observation1 and Admission3 total thirteen."
+        }
+      ],
+      "explanation": "Distinguish representational tables, identity references and constraints that require more than ordinary PK/FK declarations.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-clinical.svg"
+    },
+    {
+      "id": "p2q19",
+      "type": "multi",
+      "topic": "Testing legal populations",
+      "scenario": "Use clinical scenario H. Apply the rules shown in the diagram; do not add unstated constraints. Consider complete database states, not temporary states during a multi-step update.",
+      "prompt": "Which situations can satisfy the diagram?",
+      "options": [
+        {
+          "text": "A Hospital exists with no Wards.",
+          "correct": false,
+          "why": "Hospital participation in Contains has minimum one."
+        },
+        {
+          "text": "A Trial currently has no enrolled Patients but has its required lead Doctor.",
+          "correct": true,
+          "why": "Trial participation in Enrolment is optional."
+        },
+        {
+          "text": "An Observation is recorded for a Patient–Trial pair that has no Enrolment.",
+          "correct": false,
+          "why": "The weak Observation requires an existing owning Enrolment."
+        },
+        {
+          "text": "A Patient is not enrolled in any Trial.",
+          "correct": true,
+          "why": "Patient participation in Enrolment has minimum zero."
+        },
+        {
+          "text": "Two Hospitals each contain a Ward numbered 1.",
+          "correct": true,
+          "why": "Ward numbering is local to its Hospital."
+        }
+      ],
+      "explanation": "A population can be empty on an optional side while mandatory owners and minimum-one collections must still exist.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario.",
+      "diagram": "assets/eer-clinical.svg"
+    },
+    {
+      "id": "p2q20",
+      "type": "multi",
+      "topic": "Ternary relationship identity",
+      "scenario": "A supplier delivers a part to a project. For each (part,project) pair, exactly one supplier is chosen. A supplier can deliver many parts to many projects. A delivery row records quantity, and this scenario has one current row per chosen assignment.",
+      "prompt": "Which statements are justified?",
+      "options": [
+        {
+          "text": "supplierID alone necessarily determines a Delivery row.",
+          "correct": false,
+          "why": "A supplier may participate in many part–project assignments."
+        },
+        {
+          "text": "Delivery still needs references to Supplier, Part and Project.",
+          "correct": true,
+          "why": "Reducing the primary key does not remove participating entity references."
+        },
+        {
+          "text": "Three independent binary relations always preserve the exact delivery triples.",
+          "correct": false,
+          "why": "Pairwise associations can admit combinations that never occurred together."
+        },
+        {
+          "text": "The pair (partID,projectID) can be the Delivery primary key.",
+          "correct": true,
+          "why": "The stated rule makes that pair determine the chosen supplier and current assignment."
+        },
+        {
+          "text": "Adding supplierID to the chosen pair produces a superkey, but not a minimal key under the stated rule.",
+          "correct": true,
+          "why": "The pair already identifies the row, so supplierID is redundant for uniqueness."
+        }
+      ],
+      "explanation": "A ternary “one” condition can reduce the relation’s key, while all participant foreign keys remain necessary.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario."
+    },
+    {
+      "id": "p2q21",
+      "type": "multi",
+      "topic": "One-to-one participation",
+      "scenario": "Each laboratory has exactly one safety certificate. Each certificate belongs to exactly one laboratory. A designer keeps Lab and Certificate as separate tables and stores labID in Certificate.",
+      "prompt": "Which constraints or observations are correct?",
+      "options": [
+        {
+          "text": "Those three constraints alone ensure every Lab row has a Certificate row.",
+          "correct": false,
+          "why": "They govern Certificate rows; they do not require a referencing row for every laboratory."
+        },
+        {
+          "text": "A UNIQUE constraint should instead be placed on certificate expiryDate to enforce the 1:1 relationship.",
+          "correct": false,
+          "why": "Expiry date is unrelated to the identities participating in the one-to-one association."
+        },
+        {
+          "text": "Certificate.labID should be NOT NULL.",
+          "correct": true,
+          "why": "Every certificate must be associated with a laboratory."
+        },
+        {
+          "text": "Certificate.labID should be UNIQUE.",
+          "correct": true,
+          "why": "A laboratory can have at most one certificate."
+        },
+        {
+          "text": "Certificate.labID should reference Lab.labID.",
+          "correct": true,
+          "why": "The laboratory must exist."
+        }
+      ],
+      "explanation": "FK + NOT NULL + UNIQUE enforces one side’s mandatory 1:1 reference. The inverse minimum still needs consideration.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario."
+    },
+    {
+      "id": "p2q22",
+      "type": "multi",
+      "topic": "Relationship versus event",
+      "scenario": "A courier can transport the same parcel several times. Each transport has a globally unique tripID, departure time and fee. No rule says departure times are unique.",
+      "prompt": "Which designs preserve these events?",
+      "options": [
+        {
+          "text": "A primary key consisting only of (courierID,parcelID) would reject some permitted trips.",
+          "correct": true,
+          "why": "The same pair is allowed to recur."
+        },
+        {
+          "text": "The fee belongs to the transport event rather than necessarily to the Courier entity.",
+          "correct": true,
+          "why": "Different trips may have different fees."
+        },
+        {
+          "text": "Repeating a relationship means both entity foreign keys should be removed.",
+          "correct": false,
+          "why": "Every transport event must still identify its courier and parcel."
+        },
+        {
+          "text": "Transport(tripID PK,courierID FK,parcelID FK,departure,fee) is a suitable representation.",
+          "correct": true,
+          "why": "The event key separates repeated courier–parcel combinations."
+        },
+        {
+          "text": "A key of (courierID,parcelID,departure) is guaranteed by the stated requirements.",
+          "correct": false,
+          "why": "No departure-time uniqueness rule is provided."
+        }
+      ],
+      "explanation": "Choose identifiers from guaranteed uniqueness, not from a timestamp that merely seems likely to differ.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario."
+    },
+    {
+      "id": "p2q23",
+      "type": "multi",
+      "topic": "Composite multivalued attributes",
+      "scenario": "A museum records several contact addresses for each donor. Each address has street, city and postcode. An identical complete address must not be repeated for the same donor, but different donors may share an address.",
+      "prompt": "Which statements are correct?",
+      "options": [
+        {
+          "text": "city alone should be UNIQUE in DonorAddress.",
+          "correct": false,
+          "why": "Several addresses and donors may share a city."
+        },
+        {
+          "text": "A composite primary key containing donorID and all three address components can enforce the stated duplicate rule.",
+          "correct": true,
+          "why": "The complete tuple distinguishes permitted donor-address values under this design."
+        },
+        {
+          "text": "A separate DonorAddress relation can contain donorID, street, city and postcode.",
+          "correct": true,
+          "why": "A multivalued composite attribute maps to a separate relation containing its components and owner key."
+        },
+        {
+          "text": "donorID in DonorAddress should reference Donor.",
+          "correct": true,
+          "why": "Each address entry belongs to an existing donor."
+        },
+        {
+          "text": "Flattening the components into one Donor row is sufficient even when the donor has many addresses.",
+          "correct": false,
+          "why": "One set of columns holds one address, not an arbitrary multivalued collection."
+        }
+      ],
+      "explanation": "Composite tells you how a value is structured; multivalued tells you that a separate set of values must be represented.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario."
+    },
+    {
+      "id": "p2q24",
+      "type": "multi",
+      "topic": "Dependence and weak entities",
+      "scenario": "Every support ticket belongs to one customer and must be deleted if that customer is deleted. Nevertheless, each ticket receives a globally unique ticketID used independently throughout the system.",
+      "prompt": "Which conclusions follow?",
+      "options": [
+        {
+          "text": "Ticket must use a dashed-underlined partial key because it has a deletion dependency.",
+          "correct": false,
+          "why": "Its supplied identifier is globally unique, not merely unique within an owner."
+        },
+        {
+          "text": "customerID may still be a mandatory FK in Ticket.",
+          "correct": true,
+          "why": "The required ownership relationship is separate from Ticket’s independent identity."
+        },
+        {
+          "text": "The deletion policy alone does not prove that Ticket is a weak entity.",
+          "correct": true,
+          "why": "Existence dependence is different from lacking an independent key."
+        },
+        {
+          "text": "Every mandatory FK must be part of its table’s primary key.",
+          "correct": false,
+          "why": "Mandatory participation does not necessarily contribute to entity identification."
+        },
+        {
+          "text": "ticketID can be a primary key without adding customerID to it.",
+          "correct": true,
+          "why": "The globally unique identifier already distinguishes tickets."
+        }
+      ],
+      "explanation": "Identify weakness from identification rules. A strong entity can still have mandatory and deletion-dependent relationships.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario."
+    },
+    {
+      "id": "p2q25",
+      "type": "multi",
+      "topic": "Flags for total overlapping specialisation",
+      "scenario": "An equipment item must be classified as portable, laboratory, or both. The designer uses one Equipment table with boolean isPortable and isLaboratory columns. Both flags are NOT NULL.",
+      "prompt": "Which rules or consequences are correct?",
+      "options": [
+        {
+          "text": "The state (false,false) must be rejected.",
+          "correct": true,
+          "why": "Total covering requires membership in at least one subtype."
+        },
+        {
+          "text": "An exclusive-or rule would correctly preserve every permitted item.",
+          "correct": false,
+          "why": "Exclusive-or rejects the dual-membership case that overlap permits."
+        },
+        {
+          "text": "Subtype-specific attributes may need conditional checks tied to their corresponding flags.",
+          "correct": true,
+          "why": "A value required only for portable items, for example, should be checked when isPortable is true."
+        },
+        {
+          "text": "The state (true,true) must remain allowed.",
+          "correct": true,
+          "why": "Overlap explicitly permits both classifications."
+        },
+        {
+          "text": "A rule requiring at least one flag to be true expresses the covering condition.",
+          "correct": true,
+          "why": "With non-null boolean flags, this rejects exactly the unclassified case."
+        }
+      ],
+      "explanation": "Two flags can represent overlap; totality adds an at-least-one condition rather than an exactly-one condition.",
+      "source": "Lectures 04–05: ER/EER modelling and relational mapping; original practice scenario."
+    }
+  ]
+}
